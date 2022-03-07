@@ -1,0 +1,6 @@
+#ifndef _IMU_TASK_H_
+#define _IMU_TASK_H_
+
+#include "cmsis_os.h"
+
+#endif //_IMU_TASK_H_
