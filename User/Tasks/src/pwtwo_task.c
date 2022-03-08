@@ -1,4 +1,6 @@
 // #include "pwtwo_task.h"
+// #include "stm32f1xx.h"
+// #include "stm32f1xx_ll_bus.h"
 
 // void StartPstwoTask(void const *argument)
 // {
@@ -34,15 +36,16 @@
 
 // void PS2_Init(void)
 // {
-//     GPIO_InitTypeDef GPIO_InitStructure;
-//     LL_
-//     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOC, ENABLE); //使能端口时钟
-//     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;                                    //端口配置
-//     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;                                //上拉输入
-//     GPIO_Init(GPIOC, &GPIO_InitStructure);                                       //根据设定参数初始化GPIO
+//     LL_GPIO_InitTypeDef GPIO_InitStructure;
+//     LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_GPIOA);
+//     LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_GPIOC);
 
-//     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_3; //端口配置
-//     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;       //推挽输出
+//     GPIO_InitStructure.Pin = LL_GPIO_PIN_2;                                        //端口配置
+//     GPIO_InitStructure.Mode = LL_GPIO_MODE_INPUT;                                    //上拉输入
+//     LL_GPIO_Init(GPIOC, &GPIO_InitStructure);   // 初始化 C2 为输入模式                                     //根据设定参数初始化GPIO
+
+//     GPIO_InitStructure.Pin = LL_GPIO_PIN_1 | LL_GPIO_PIN_3; //端口配置
+//     GPIO_InitStructure.Mode = LL_GPIO_MODE_O;       //推挽输出
 //     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;      // 50M
 //     GPIO_Init(GPIOC, &GPIO_InitStructure);                 //根据设定参数初始化GPIOA
 
