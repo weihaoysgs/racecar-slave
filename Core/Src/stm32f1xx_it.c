@@ -22,6 +22,7 @@
 #include "stm32f1xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "uart4.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -165,7 +166,14 @@ void DebugMon_Handler(void)
 void UART4_IRQHandler(void)
 {
   /* USER CODE BEGIN UART4_IRQn 0 */
-
+  if (LL_USART_IsActiveFlag_TC(UART4))
+  {
+    Uart4_It_Tc_Callback();
+  }
+  if (LL_USART_IsActiveFlag_IDLE(UART4))
+  {
+    Uart4_DMA_RxCp_Callback();
+  }
   /* USER CODE END UART4_IRQn 0 */
   /* USER CODE BEGIN UART4_IRQn 1 */
 
