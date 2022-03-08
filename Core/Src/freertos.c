@@ -50,6 +50,7 @@
 osThreadId chassisTaskHandle;
 osThreadId imuTaskHandle;
 osThreadId defaultTaskHandle;
+osMutexId printfMutexHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -87,6 +88,10 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN Init */
 
   /* USER CODE END Init */
+  /* Create the mutex(es) */
+  /* definition and creation of printfMutex */
+  osMutexDef(printfMutex);
+  printfMutexHandle = osMutexCreate(osMutex(printfMutex));
 
   /* USER CODE BEGIN RTOS_MUTEX */
   /* add mutexes, ... */
