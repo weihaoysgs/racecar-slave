@@ -50,6 +50,7 @@
 osThreadId chassisTaskHandle;
 osThreadId imuTaskHandle;
 osThreadId defaultTaskHandle;
+osThreadId pstwoTaskHandle;
 osTimerId motorSpeedClcTimerHandle;
 osMutexId printfMutexHandle;
 
@@ -61,6 +62,7 @@ osMutexId printfMutexHandle;
 void StartChassisTask(void const * argument);
 void StartImuTask(void const * argument);
 void StartDefaultTask(void const * argument);
+void StartPstwoTask(void const * argument);
 void motorSpeedClcTimerCallback(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
@@ -134,16 +136,20 @@ void MX_FREERTOS_Init(void) {
 
   /* Create the thread(s) */
   /* definition and creation of chassisTask */
-  osThreadDef(chassisTask, StartChassisTask, osPriorityNormal, 0, 256);
+  osThreadDef(chassisTask, StartChassisTask, osPriorityNormal, 0, 128);
   chassisTaskHandle = osThreadCreate(osThread(chassisTask), NULL);
 
   /* definition and creation of imuTask */
-  osThreadDef(imuTask, StartImuTask, osPriorityNormal, 0, 256);
+  osThreadDef(imuTask, StartImuTask, osPriorityNormal, 0, 128);
   imuTaskHandle = osThreadCreate(osThread(imuTask), NULL);
 
   /* definition and creation of defaultTask */
   osThreadDef(defaultTask, StartDefaultTask, osPriorityIdle, 0, 128);
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
+
+  /* definition and creation of pstwoTask */
+  osThreadDef(pstwoTask, StartPstwoTask, osPriorityNormal, 0, 128);
+  pstwoTaskHandle = osThreadCreate(osThread(pstwoTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -203,6 +209,24 @@ __weak void StartDefaultTask(void const * argument)
     osDelay(1);
   }
   /* USER CODE END StartDefaultTask */
+}
+
+/* USER CODE BEGIN Header_StartPstwoTask */
+/**
+* @brief Function implementing the pstwoTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartPstwoTask */
+__weak void StartPstwoTask(void const * argument)
+{
+  /* USER CODE BEGIN StartPstwoTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartPstwoTask */
 }
 
 /* motorSpeedClcTimerCallback function */
