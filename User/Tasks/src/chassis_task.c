@@ -3,9 +3,9 @@
 static const int32_t chassis_get_control_data_sig = 0x0001;
 extern osThreadId chassisTaskHandle;
 
-static uint16_t *uart4_rxd_len;                           // 本次遥控器接收到的数据长度
-static uint8_t *uart4_rx_buffer;                          // 遥控器两次接收数据缓冲
-static const uint32_t chassis_control_data_overtime = 50; // 遥控器接收数据包超时时间
+static uint16_t *uart4_rxd_len;                           
+static uint8_t *uart4_rx_buffer;                          
+static const uint32_t chassis_control_data_overtime = 50; 
 
 void StartChassisTask(void const *argument)
 {
