@@ -15,6 +15,13 @@ static const uint32_t chassis_control_data_overtime = 50;
 void StartChassisTask(void const *argument)
 {
     StartMotorSpeedCalcTimer();
+    LL_TIM_CC_EnableChannel(TIM3, LL_TIM_CHANNEL_CH1);
+    LL_TIM_CC_EnableChannel(TIM3, LL_TIM_CHANNEL_CH2);
+    LL_TIM_ClearFlag_UPDATE(TIM3);
+    LL_TIM_EnableIT_UPDATE(TIM3);
+    LL_TIM_EnableCounter(TIM3);
+    
+    // LL_TIM_Enable
     Uart4_Rx_Init();
     Uart4_Tx_Init();
     uart4_rx_buffer = Get_Uart4_DMA_RxBuffer();
@@ -35,7 +42,7 @@ void StartChassisTask(void const *argument)
         // }
         // SetMotorLeftPower(30000);
         // SetMotorRightPower(30000);
-        ___printf("ro: %d %d\r\n", TIM3->CNT, GetMotorRightSpeed());
+        // ___printf("ro: %d %d\r\n", TIM3->CNT, GetMotorRightSpeed());
         osDelay(50);
     }
 }

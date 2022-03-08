@@ -5,7 +5,7 @@ extern osTimerId motorSpeedCalcTimerHandle;
 static int32_t tim3Speed = 0;
 
 void StartMotorSpeedCalcTimer(void) {
-    osTimerStart(motorSpeedCalcTimerHandle, 500);
+    osTimerStart(motorSpeedCalcTimerHandle, 160);
 }
 
 void motorSpeedClcTimerCallback(void const * argument) {
