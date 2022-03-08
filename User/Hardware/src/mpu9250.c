@@ -1,149 +1,109 @@
 #include "mpu9250.h"
 
-short Accel[3];
-short Gyro[3];
-short Mag[3];
-short gyroX, gyroY, gyroZ;
-short accelX, accelY, accelZ;
-short magX, magY, magZ;
-void MPU9250_Write_Reg(uint8_t Slave_add, uint8_t reg_add, uint8_t reg_dat)
-{
-	IIC_Start();
-	IIC_Send_Byte(Slave_add);
-	IIC_Wait_Ack();
-	IIC_Send_Byte(reg_add);
-	IIC_Wait_Ack();
-	IIC_Send_Byte(reg_dat);
-	IIC_Wait_Ack();
-	IIC_Stop();
-}
-
-uint8_t MPU9250_Read_Reg(uint8_t Slave_add, uint8_t reg_add)
-{
-	uint8_t temp = 0;
-
-	IIC_Start();
-	IIC_Send_Byte(Slave_add);
-	temp = IIC_Wait_Ack();
-	IIC_Send_Byte(reg_add);
-	temp = IIC_Wait_Ack();
-	IIC_Start(); //
-	IIC_Send_Byte(Slave_add + 1);
-	temp = IIC_Wait_Ack();
-	temp = IIC_Read_Byte(0);
-	IIC_Stop();
-
-	return temp;
-}
-
-void MPU6050_ReadData(uint8_t Slave_add, uint8_t reg_add, uint8_t *Read, uint8_t num)
-{
-	uint8_t i;
-
-	IIC_Start();
-	IIC_Send_Byte(Slave_add);
-	IIC_Wait_Ack();
-	IIC_Send_Byte(reg_add);
-	IIC_Wait_Ack();
-
-	IIC_Start();
-	IIC_Send_Byte(Slave_add + 1);
-	IIC_Wait_Ack();
-
-	for (i = 0; i < (num - 1); i++)
-	{
-		*Read = IIC_Read_Byte(1);
-		Read++;
-	}
-	*Read = IIC_Read_Byte(0);
-	IIC_Stop();
-}
-
 uint8_t MPU9250_Init(void)
 {
-	IIC_Init();
-	if (MPU9250_Read_Reg(GYRO_ADDRESS, WHO_AM_I) == 0x71)
+	uint8_t res = 0;
+	IIC_WriteAddrRegByte(MPU6500_ADDR, MPU9250_PWR_MGMT1_REG, 0x80); //复位MPU9250
+	osDelay(100);
+	IIC_WriteAddrRegByte(MPU6500_ADDR, MPU9250_PWR_MGMT2_REG, 0x00); //唤醒MPU9250
+	MPU9250_SetGyroFsr(MPU9250_GYRO_FSR);
+	MPU9250_SetAccelFsr(MPU9250_ACCEL_FSR);
+	MPU9250_SetRate(MPU9250_RATE);
+	IIC_WriteAddrRegByte(MPU6500_ADDR, MPU9250_INT_EN_REG, 0x00); //关闭所有中断
+
+	IIC_WriteAddrRegByte(MPU6500_ADDR, MPU9250_USER_CTRL_REG, 0x00); // I2C主模式关闭
+	IIC_WriteAddrRegByte(MPU6500_ADDR, MPU9250_FIFO_EN_REG, 0x00);	 //关闭FIFO
+	IIC_WriteAddrRegByte(MPU6500_ADDR, MPU9250_INTBP_CFG_REG, 0x82); // INT引脚低电平有效，开启bypass模式，可以直//读取MPU6500的ID接读取磁力计
+
+	res = IIC_ReadAddrRegByte(MPU6500_ADDR, MPU9250_DEVICE_ID_REG);
+
+	if (res == MPU6500_ID)
 	{
-		//MPU9250_Write_Reg(GYRO_ADDRESS,GYRO_ADDRESS,PWR_MGMT_1,0X80);	//电源管理,复位MPU9250
-		MPU9250_Write_Reg(GYRO_ADDRESS, PWR_MGMT_1, 0x00);	 //解除休眠状态
-		MPU9250_Write_Reg(GYRO_ADDRESS, SMPLRT_DIV, 0x07);	 //采样频率125Hz
-		MPU9250_Write_Reg(GYRO_ADDRESS, CONFIG, 0X06);		 //低通滤波器5Hz
-		MPU9250_Write_Reg(GYRO_ADDRESS, GYRO_CONFIG, 0X18);	 //陀螺仪量程,正负2000度
-		MPU9250_Write_Reg(GYRO_ADDRESS, ACCEL_CONFIG, 0X18); //加速度量程,正负16g
-		return 0;
+		IIC_WriteAddrRegByte(MPU6500_ADDR, MPU9250_PWR_MGMT1_REG, 0x01); //设置CLKSEL,PLL X轴为参考
+		IIC_WriteAddrRegByte(MPU6500_ADDR, MPU9250_PWR_MGMT2_REG, 0x00); //加速度与陀螺仪都工作
+		MPU9250_SetRate(MPU9250_RATE);
 	}
-	return 1;
+	else
+	{
+		___printf("MPU9250 Init failed 1, res = 0x%X\r\n", res);
+		return 1;
+	}
+
+	res = IIC_ReadAddrRegByte(AK8963_ADDR, MPU9250_MAG_WIA); //读取AK8963 ID
+	if (res == AK8963_ID)
+	{
+		IIC_WriteAddrRegByte(AK8963_ADDR, MPU9250_MAG_CNTL1, 0x11); //设置AK8963为连续测量模式
+		___printf("MPU9250 Init success.\r\n");
+	}
+	else
+	{
+		___printf("MPU9250 Init failed 2, res = 0x%X\r\n", res);
+		return 1;
+	}
+	return 0;
 }
 
-//------------------------------读取MPU9250数据------------------------------//
-
-void MPU9250_READ_ACCEL(short *accData)
+/* 设置MPU9250陀螺仪传感器满量程范围					
+ * fsr:0,±250dps;1,±500dps;2,±1000dps;3,±2000dps	
+ * 返回值:0,设置成功									
+ *    其他,设置失败 									
+ */
+uint8_t MPU9250_SetGyroFsr(uint8_t fsr)
 {
-	uint8_t BUF[6];
-	BUF[0] = MPU9250_Read_Reg(ACCEL_ADDRESS, ACCEL_XOUT_L);
-	BUF[1] = MPU9250_Read_Reg(ACCEL_ADDRESS, ACCEL_XOUT_H);
-	accelX = (BUF[1] << 8) | BUF[0];
-	//accData[0]/=164;								//读取并计算X轴数据
-
-	BUF[2] = MPU9250_Read_Reg(ACCEL_ADDRESS, ACCEL_YOUT_L);
-	BUF[3] = MPU9250_Read_Reg(ACCEL_ADDRESS, ACCEL_YOUT_H);
-	accelY = (BUF[3] << 8) | BUF[2];
-	//accData[1]/=164;								//读取并计算Y轴数据
-
-	BUF[4] = MPU9250_Read_Reg(ACCEL_ADDRESS, ACCEL_ZOUT_L);
-	BUF[5] = MPU9250_Read_Reg(ACCEL_ADDRESS, ACCEL_ZOUT_H);
-	accelZ = (BUF[5] << 8) | BUF[4];
-	//accData[2]/=164;								//读取并计算Z轴数据
+	return IIC_WriteAddrRegByte(MPU6500_ADDR, MPU9250_GYRO_CFG_REG, fsr<<3);	//设置陀螺仪满量程范围  
 }
 
-void MPU9250_READ_GYRO(short *gyroData)
+
+
+/* 设置MPU92506050加速度传感器满量程范围	
+ * fsr:0,±2g;1,±4g;2,±8g;3,±16g		
+ * 返回值:0,设置成功						
+ *    其他,设置失败 						
+ */
+
+uint8_t MPU9250_SetAccelFsr(uint8_t fsr)
 {
-	uint8_t BUF[8];
-	BUF[0] = MPU9250_Read_Reg(GYRO_ADDRESS, GYRO_XOUT_L);
-	BUF[1] = MPU9250_Read_Reg(GYRO_ADDRESS, GYRO_XOUT_H);
-	gyroX = (BUF[1] << 8) | BUF[0];
-	//gyroData[0]/=16.4;
-
-	BUF[2] = MPU9250_Read_Reg(GYRO_ADDRESS, GYRO_YOUT_L);
-	BUF[3] = MPU9250_Read_Reg(GYRO_ADDRESS, GYRO_YOUT_H);
-	gyroY = (BUF[3] << 8) | BUF[2];
-	//gyroData[1]/=16.4;
-
-	BUF[4] = MPU9250_Read_Reg(GYRO_ADDRESS, GYRO_ZOUT_L);
-	BUF[5] = MPU9250_Read_Reg(GYRO_ADDRESS, GYRO_ZOUT_H);
-	gyroZ = (BUF[5] << 8) | BUF[4];
-	//gyroData[2]=16.4;
-
-	//BUF[6]=MPU9250_Read_Reg(GYRO_ADDRESS,TEMP_OUT_L);	//读取温度
-	//BUF[7]=MPU9250_Read_Reg(GYRO_ADDRESS,TEMP_OUT_H);
-	//gyroData[3]=(BUF[7]<<8)|BUF[6];
-	//gyroData[3] = 35+ ((double) (T_T + 13200)) / 280;
+	return IIC_WriteAddrRegByte(MPU6500_ADDR, MPU9250_ACCEL_CFG_REG, fsr<<3);	//设置加速度传感器满量程范围  
 }
 
-void MPU9250_READ_MAG(short *magData)
+/* 设置MPU92506050的数字低通滤波器		
+ * lpf:数字低通滤波频率(Hz)				
+ * 返回值:0,设置成功						
+ *    其他,设置失败 						
+ */
+
+uint8_t MPU9250_SetLPF(uint16_t lpf)
 {
-	uint8_t BUF[6];
-	MPU9250_Write_Reg(GYRO_ADDRESS, INT_PIN_CFG, 0x02); //turn on Bypass Mode
-	osDelay(10);
-	MPU9250_Write_Reg(MAG_ADDRESS, 0x0A, 0x01); //用来启动单次转换,否则磁力计输出的数据不变
-	osDelay(10);
-
-	BUF[0] = MPU9250_Read_Reg(MAG_ADDRESS, MAG_XOUT_L);
-	BUF[1] = MPU9250_Read_Reg(MAG_ADDRESS, MAG_XOUT_H);
-	magX = (BUF[1] << 8) | BUF[0];
-
-	BUF[2] = MPU9250_Read_Reg(MAG_ADDRESS, MAG_YOUT_L);
-	BUF[3] = MPU9250_Read_Reg(MAG_ADDRESS, MAG_YOUT_H);
-	magY = (BUF[3] << 8) | BUF[2];
-
-	BUF[4] = MPU9250_Read_Reg(MAG_ADDRESS, MAG_ZOUT_L);
-	BUF[5] = MPU9250_Read_Reg(MAG_ADDRESS, MAG_ZOUT_H);
-	magZ = (BUF[5] << 8) | BUF[4];
+	uint8_t data=0;
+	if(lpf>=188)
+		data=1;
+	else if(lpf>=98)
+		data=2;
+	else if(lpf>=42)
+		data=3;
+	else if(lpf>=20)
+		data=4;
+	else if(lpf>=10)
+		data=5;
+	else 
+		data=6; 
+	return IIC_WriteAddrRegByte(MPU6500_ADDR, MPU9250_CFG_REG, data);			//设置数字低通滤波器  
 }
 
-void readImu()
+/* 设置MPU9250的采样率(假定Fs=1KHz)		
+ * rate:4~1000(Hz)						
+ * 返回值:0,设置成功						
+ *    其他,设置失败 						
+ */
+
+uint8_t MPU9250_SetRate(uint16_t rate)
 {
-	MPU9250_READ_ACCEL(Accel);
-	MPU9250_READ_GYRO(Gyro);
-	MPU9250_READ_MAG(Mag);
+	uint8_t data;
+	if(rate>1000)
+		rate=1000;
+	if(rate<4)
+		rate=4;
+	data = 1000 / rate - 1;
+	data = IIC_WriteAddrRegByte(MPU6500_ADDR, MPU9250_SAMPLE_RATE_REG, data);	//设置数字低通滤波器
+ 	return MPU9250_SetLPF(rate/2);											//自动设置LPF为采样率的一半
 }
