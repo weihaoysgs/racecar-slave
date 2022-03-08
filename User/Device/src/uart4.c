@@ -31,17 +31,17 @@ void Uart4_It_Tc_Callback(void)
 
 void Uart4_Rx_Init(void)
 {
-    LL_DMA_SetPeriphAddress(DMA2, LL_DMA_CHANNEL_5, LL_USART_DMA_GetRegAddr(UART4));
-    LL_DMA_SetMemoryAddress(DMA2, LL_DMA_CHANNEL_5, (uint32_t)(uart4_dma_rx_buffer));
+    LL_DMA_SetPeriphAddress(DMA2, LL_DMA_CHANNEL_3, LL_USART_DMA_GetRegAddr(UART4));
+    LL_DMA_SetMemoryAddress(DMA2, LL_DMA_CHANNEL_3, (uint32_t)(uart4_dma_rx_buffer));
 
-    LL_DMA_SetDataLength(DMA2, LL_DMA_CHANNEL_5, uart4_dma_rx_max_len);
+    LL_DMA_SetDataLength(DMA2, LL_DMA_CHANNEL_3, uart4_dma_rx_max_len);
 
     LL_USART_ClearFlag_IDLE(UART4);
     LL_USART_EnableIT_IDLE(UART4);
 
     LL_USART_EnableDMAReq_RX(UART4);
 
-    LL_DMA_EnableChannel(DMA2, LL_DMA_CHANNEL_5);
+    LL_DMA_EnableChannel(DMA2, LL_DMA_CHANNEL_3);
 }
 
 uint8_t *Get_Uart4_DMA_RxBuffer(void)
@@ -54,26 +54,31 @@ const uint16_t *Get_Uart4_DMA_Rx_MaxLen(void)
     return &uart4_dma_rx_max_len;
 }
 
+uint16_t *Get_Uart4_Rxd_Data_Len(void)
+{
+    return (uint16_t *)(&uart4_rxd_data_len);
+}
+
 void Uart4_DMA_RxCp_Callback(void)
 {
     ///< 关闭 DMA
-    LL_DMA_DisableChannel(DMA2, LL_DMA_CHANNEL_5);
+    LL_DMA_DisableChannel(DMA2, LL_DMA_CHANNEL_3);
 
     ///< 清楚 IDLE 中断、DMA TC2 标志位
     LL_USART_ClearFlag_IDLE(UART4);
-    LL_DMA_ClearFlag_TC2(DMA2);
+    LL_DMA_ClearFlag_TC5(DMA2);
 
     ///< 获取该帧的数据长度
-    uart4_rxd_data_len = uart4_dma_rx_max_len - LL_DMA_GetDataLength(DMA2, LL_DMA_CHANNEL_5);
+    uart4_rxd_data_len = uart4_dma_rx_max_len - LL_DMA_GetDataLength(DMA2, LL_DMA_CHANNEL_3);
 
     ///< 重新设置数据传输长度
-    LL_DMA_SetDataLength(DMA2, LL_DMA_CHANNEL_5, uart4_dma_rx_max_len);
+    LL_DMA_SetDataLength(DMA2, LL_DMA_CHANNEL_3, uart4_dma_rx_max_len);
 
     ///< 通知任务进行解析
     Info_Chassis_Task_Get_Control_Data();
 
     ///< 重新开启 DMA
-    LL_DMA_EnableChannel(DMA2, LL_DMA_CHANNEL_5);
+    LL_DMA_EnableChannel(DMA2, LL_DMA_CHANNEL_3);
 }
 
 static uint8_t first_release_mutex_flag = 0;

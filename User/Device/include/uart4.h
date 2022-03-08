@@ -11,6 +11,7 @@
 #include "string.h"
 #include "default_task.h"
 
+uint16_t *Get_Uart4_Rxd_Data_Len(void);
 void Uart4_Tx_Init(void);
 void Uart4_Transmit_Dma(uint32_t data_address, uint32_t len);
 void Uart4_It_Tc_Callback(void);
