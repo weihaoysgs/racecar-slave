@@ -1126,6 +1126,11 @@
               <FileType>1</FileType>
               <FilePath>..\User\Tasks\src\pwtwo_task.c</FilePath>
             </File>
+            <File>
+              <FileName>motor_speed_timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\Tasks\src\motor_speed_timer.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
