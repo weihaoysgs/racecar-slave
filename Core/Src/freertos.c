@@ -51,7 +51,7 @@ osThreadId chassisTaskHandle;
 osThreadId imuTaskHandle;
 osThreadId defaultTaskHandle;
 osThreadId pstwoTaskHandle;
-osTimerId motorSpeedClcTimerHandle;
+osTimerId motorSpeedCalcTimerHandle;
 osMutexId printfMutexHandle;
 
 /* Private function prototypes -----------------------------------------------*/
@@ -122,9 +122,9 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE END RTOS_SEMAPHORES */
 
   /* Create the timer(s) */
-  /* definition and creation of motorSpeedClcTimer */
-  osTimerDef(motorSpeedClcTimer, motorSpeedClcTimerCallback);
-  motorSpeedClcTimerHandle = osTimerCreate(osTimer(motorSpeedClcTimer), osTimerPeriodic, NULL);
+  /* definition and creation of motorSpeedCalcTimer */
+  osTimerDef(motorSpeedCalcTimer, motorSpeedClcTimerCallback);
+  motorSpeedCalcTimerHandle = osTimerCreate(osTimer(motorSpeedCalcTimer), osTimerPeriodic, NULL);
 
   /* USER CODE BEGIN RTOS_TIMERS */
   /* start timers, add new ones, ... */
