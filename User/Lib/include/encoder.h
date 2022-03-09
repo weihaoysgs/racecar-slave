@@ -4,6 +4,9 @@
 #include "stm32f1xx.h"
 #include "stm32f1xx_ll_tim.h"
 
+int32_t GetTim2EncoderChangedValue(void);
+void Tim2InterruptCallback(void);
+
 int32_t GetTim3EncoderChangedValue(void);
 void Tim3InterruptCallback(void);
 
