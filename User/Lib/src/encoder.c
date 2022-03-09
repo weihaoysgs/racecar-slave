@@ -9,7 +9,7 @@ int32_t GetTim3EncoderChangedValue(void) {
 	int32_t tim3_this_cnt_value = TIM3->CNT;
 	encoder_changed_value = tim3_this_cnt_value-tim3_last_cnt_value + 3300*tim3_update_direction;
 
-	___printf("%d a %d, b %d, c %d\r\n", encoder_changed_value, tim3_last_cnt_value, tim3_this_cnt_value, tim3_update_direction);
+	// ___printf("%d a %d, b %d, c %d\r\n", encoder_changed_value, tim3_last_cnt_value, tim3_this_cnt_value, tim3_update_direction);
 	tim3_update_direction = 0;
 	tim3_last_cnt_value = tim3_this_cnt_value;
 	return encoder_changed_value;

@@ -965,11 +965,6 @@
               <FilePath>..\User\Lib\src\filter.c</FilePath>
             </File>
             <File>
-              <FileName>pstwo.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\User\Lib\src\pstwo.c</FilePath>
-            </File>
-            <File>
               <FileName>pid.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\User\Lib\src\pid.c</FilePath>
@@ -1059,6 +1054,11 @@
               <FileName>softi2c.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\User\Hardware\src\softi2c.c</FilePath>
+            </File>
+            <File>
+              <FileName>pstwo.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\Hardware\src\pstwo.c</FilePath>
             </File>
           </Files>
         </Group>

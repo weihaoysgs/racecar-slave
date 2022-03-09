@@ -1,7 +1,7 @@
 #include "mpu9250.h"
 #include "softi2c.h"
 
-uint8_t MPU9250_Init(Softi2c_device_t *soft_iic_device)
+uint8_t MPU9250_Init()
 {
 	// uint8_t res = 0;
 	// IIC_WriteAddrRegByte(MPU6500_ADDR, MPU9250_PWR_MGMT1_REG, 0x80); //复位MPU9250
@@ -41,7 +41,7 @@ uint8_t MPU9250_Init(Softi2c_device_t *soft_iic_device)
 	// 	___printf("MPU9250 Init failed 2, res = 0x%X\r\n", res);
 	// 	return 1;
 	// }
-	// return 0;
+	 return 0;
 }
 
 ///* 设置MPU9250陀螺仪传感器满量程范围					
