@@ -7,7 +7,7 @@ static int32_t tim2_last_cnt_value;
 
 int32_t GetTim2EncoderChangedValue(void) {
 	int32_t encoder_changed_value = 0;
-	int32_t tim2_this_cnt_value = TIM3->CNT;
+	int32_t tim2_this_cnt_value = TIM2->CNT;
 	encoder_changed_value = tim2_this_cnt_value-tim2_last_cnt_value + 3300*tim2_update_direction;
 	tim2_update_direction = 0;
 	tim2_last_cnt_value = tim2_this_cnt_value;

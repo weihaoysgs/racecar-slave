@@ -3,8 +3,8 @@
 
 #include "cmsis_os.h"
 
-void StartMotorSpeedCalcTimer(void);
-
+void StartTimer2Timer3AndStartMotorSpeedCalcTimer(void);
+int32_t GetMotorLeftSpeed(void);
 int32_t GetMotorRightSpeed(void);
 
 #endif
