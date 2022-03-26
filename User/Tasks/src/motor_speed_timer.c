@@ -16,7 +16,7 @@ void StartTimer2Timer3AndStartMotorSpeedCalcTimer(void) {
     LL_TIM_ClearFlag_UPDATE(TIM3);
     LL_TIM_EnableIT_UPDATE(TIM3);
     LL_TIM_EnableCounter(TIM3);
-    osTimerStart(motorSpeedCalcTimerHandle, 60);
+    osTimerStart(motorSpeedCalcTimerHandle, 80);
 }
 
 void motorSpeedClcTimerCallback(void const * argument) {

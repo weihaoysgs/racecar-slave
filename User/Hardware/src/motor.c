@@ -20,10 +20,10 @@ void SetMotorLeftPower(int32_t power) {
 
 void SetMotorRightPower(uint16_t power) {
 	if(power > 0) {
-		TIM8->CCR3 = 0;
-		TIM8->CCR4 = power;
-	} else {
 		TIM8->CCR3 = power;
 		TIM8->CCR4 = 0;
+	} else {
+		TIM8->CCR3 = 0;
+		TIM8->CCR4 = power;
 	}
 }
