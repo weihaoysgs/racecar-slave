@@ -974,6 +974,21 @@
               <FileType>1</FileType>
               <FilePath>..\User\Hardware\src\motor.c</FilePath>
             </File>
+            <File>
+              <FileName>mpu9250.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\Hardware\src\mpu9250.c</FilePath>
+            </File>
+            <File>
+              <FileName>soft_iic.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\Hardware\src\soft_iic.c</FilePath>
+            </File>
+            <File>
+              <FileName>ps_two.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\Hardware\src\ps_two.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -995,14 +1010,14 @@
               <FilePath>..\User\Tasks\src\default_task.c</FilePath>
             </File>
             <File>
-              <FileName>pwtwo_task.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\User\Tasks\src\pwtwo_task.c</FilePath>
-            </File>
-            <File>
               <FileName>motor_speed_timer.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\User\Tasks\src\motor_speed_timer.c</FilePath>
+            </File>
+            <File>
+              <FileName>pstwo_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\Tasks\src\pstwo_task.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -40,7 +40,7 @@ void StartChassisTask(void const *argument)
         // Set_ChassisMotor_Speed(0, 0);
         SetMotorRightPower(5000);
         // ___printf("ro: %d %d\r\n", TIM3->CNT, GetMotorRightSpeed());
-        ___printf("ro: %d %d \r\n", GetMotorLeftSpeed(), GetMotorRightSpeed());
+        // ___printf("ro: %d %d \r\n", GetMotorLeftSpeed(), GetMotorRightSpeed());
         osDelay(50);
     }
 }
