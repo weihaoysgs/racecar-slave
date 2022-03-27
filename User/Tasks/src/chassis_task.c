@@ -83,3 +83,20 @@ uint16_t Servo_Pwm_Limit(int16_t *input)
 void Set_Ackerman_Steering_Angle(int16_t angle)
 {
 }
+
+
+/**
+ * @brief ??pid????
+ * 
+ * @param left_motor_speed ????????
+ * @param right_motor_speed ????????
+ */
+void Set_Motors_Speed(int32_t left_motor_speed, int32_t right_motor_speed) {
+#define MOTOR_PID_INIT() NEW_POSITION_PID(100, 0, 0.8, 5000, 7200, 0, 1000, 500)
+    static Pid_Position_t left_motor_pid = MOTOR_PID_INIT();
+    static Pid_Position_t right_motor_pid = MOTOR_PID_INIT();
+    SetMotorLeftPower(Pid_Position_Calc(&left_motor_pid, left_motor_speed, GetMotorLeftSpeed()));
+    SetMotorLeftPower(Pid_Position_Calc(&right_motor_pid, right_motor_speed, GetMotorRightSpeed()));
+#undef MOTOR_PID_INIT
+}
+
