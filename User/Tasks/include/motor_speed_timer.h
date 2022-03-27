@@ -6,5 +6,6 @@
 void StartTimer2Timer3AndStartMotorSpeedCalcTimer(void);
 int32_t GetMotorLeftSpeed(void);
 int32_t GetMotorRightSpeed(void);
+void StartServoTimer(void);
 
 #endif
