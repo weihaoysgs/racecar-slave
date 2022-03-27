@@ -5,6 +5,6 @@
 #include "stm32f1xx_ll_tim.h"
 
 void SetMotorLeftPower(int32_t power);
-void SetMotorRightPower(uint16_t power);
+void SetMotorRightPower(int32_t power);
 
 #endif // __MOTOR_H_
