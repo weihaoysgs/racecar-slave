@@ -14,27 +14,26 @@
 #define CS_H PCout(3) = 1 //片选拉高
 #define CS_L PCout(3) = 0 //片选拉低
 
-#define CLK_H PCout(4) = 1 //时钟拉高
-#define CLK_L PCout(4) = 0 //时钟拉低
+#define CLK_H PAout(4) = 1 //时钟拉高
+#define CLK_L PAout(4) = 0 //时钟拉低
 
 // #define DI_GPIO_CLK 	    RCC_APB2Periph_GPIOC		/* DI端口时钟*/
-#define DI_GPIO_PORT GPIOC	   /* DI端口 */
-#define DI_GPIO_PIN LL_GPIO_PIN_2 /* DI的端口 */
+#define DI_GPIO_PORT GPIOC		  //! DI端口 */
+#define DI_GPIO_PIN LL_GPIO_PIN_2 //! DI的端口 */
 
 // #define DO_GPIO_CLK 	    RCC_APB2Periph_GPIOC		/* DO端口时钟*/
-#define DO_GPIO_PORT GPIOC	   /* DO端口 */
-#define DO_GPIO_PIN LL_GPIO_PIN_1 /* DO的端口 */
+#define DO_GPIO_PORT GPIOC		  //! DO端口 */
+#define DO_GPIO_PIN LL_GPIO_PIN_1 //! DO的端口 */
 
 // #define CS_GPIO_CLK 	    RCC_APB2Periph_GPIOC		/* CS端口时钟*/
-#define CS_GPIO_PORT GPIOC	   /* CS端口 */
-#define CS_GPIO_PIN LL_GPIO_PIN_3 /* CS的端口 */
+#define CS_GPIO_PORT GPIOC		  //! CS端口 */
+#define CS_GPIO_PIN LL_GPIO_PIN_3 //! CS的端口 */
 
 // #define CLK_GPIO_CLK 	    RCC_APB2Periph_GPIOC		/* CLK端口时钟*/
-#define CLK_GPIO_PORT GPIOC		/* CLK端口 */
-#define CLK_GPIO_PIN LL_GPIO_PIN_4 /* CLK的端口 */
+#define CLK_GPIO_PORT GPIOA		   //! CLK端口 */
+#define CLK_GPIO_PIN LL_GPIO_PIN_4 //! CLK的端口 */
 
 // 按键读取，零时存取
-
 uint8_t Comd[2] = {0x01, 0x42};											  // 开始命令，请求数据
 uint8_t Data[9] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}; // 数据存储数组
 uint16_t MASK[] = {
@@ -60,13 +59,14 @@ void PS2_Init(void)
 {
 	LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
 	LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_GPIOC);
+	LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_GPIOA);
 	// RCC_APB2PeriphClockCmd(DI_GPIO_CLK | DO_GPIO_CLK | CS_GPIO_CLK | CLK_GPIO_CLK, ENABLE);  //开启全部时钟
 
 	/* DI设置为下拉输入 */
 	GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT; //下拉输入
 	GPIO_InitStruct.Pin = DI_GPIO_PIN;
 	GPIO_InitStruct.Pull = LL_GPIO_PULL_DOWN;
-	GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_HIGH;
+	GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
 	LL_GPIO_Init(DI_GPIO_PORT, &GPIO_InitStruct);
 
 	/* DO设置为推挽输出 */

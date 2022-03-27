@@ -4,7 +4,8 @@ PS2 remoter;
 
 void StartPstwoTask(void const *argument)
 {
-    PS2_Init();
+    // PS2_Init();
+    // PS2_SetInit();
     for (;;)
     {
         /*更新遥控数据*/
