@@ -1,10 +1,14 @@
 #include "encoder.h"
-#include "uart4.h"
 
 /* --- 左电机编码器 BEGIN --- */
 static int8_t tim2_update_direction = 0;
 static int32_t tim2_last_cnt_value;
 
+/**
+ * @brief 计算编码器改变的数据
+ * 
+ * @return int32_t 改变的数据
+ */
 int32_t GetTim2EncoderChangedValue(void) {
 	int32_t encoder_changed_value = 0;
 	int32_t tim2_this_cnt_value = TIM2->CNT;
@@ -14,14 +18,14 @@ int32_t GetTim2EncoderChangedValue(void) {
 	return encoder_changed_value;
 }
 
-void Tim2InterruptCallback(void) {
-	if(LL_TIM_IsActiveFlag_UPDATE(TIM2)) {
-		if(LL_TIM_COUNTERDIRECTION_UP == LL_TIM_GetDirection(TIM2)) {
+void TIM2_IRQHandler(void) {
+	if(TIM_GetITStatus(TIM2, TIM_IT_Update)) {
+		if(0u == ((TIM2->CR1) & ((0x1UL << (4U))))) {
 			tim2_update_direction++;
 		} else {
 			tim2_update_direction--;
 		}
-		LL_TIM_ClearFlag_UPDATE(TIM2);
+		TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 	}
 }
 /* --- 左电机编码器 END --- */
@@ -31,6 +35,11 @@ void Tim2InterruptCallback(void) {
 static int8_t tim3_update_direction = 0;
 static int32_t tim3_last_cnt_value;
 
+/**
+ * @brief 计算编码器改变的数据
+ * 
+ * @return int32_t 改变的数据
+ */
 int32_t GetTim3EncoderChangedValue(void) {
 	int32_t encoder_changed_value = 0;
 	int32_t tim3_this_cnt_value = TIM3->CNT;
@@ -40,14 +49,14 @@ int32_t GetTim3EncoderChangedValue(void) {
 	return encoder_changed_value;
 }
 
-void Tim3InterruptCallback(void) {
-	if(LL_TIM_IsActiveFlag_UPDATE(TIM3)) {
-		if(LL_TIM_COUNTERDIRECTION_UP == LL_TIM_GetDirection(TIM3)) {
+void TIM3_IRQHandler(void) {
+	if(TIM_GetITStatus(TIM3, TIM_IT_Update)) {
+		if(0u == ((TIM3->CR1) & ((0x1UL << (4U))))) {
 			tim3_update_direction++;
 		} else {
 			tim3_update_direction--;
 		}
-		LL_TIM_ClearFlag_UPDATE(TIM3);
+		TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
 	}
 }
 /* --- 右电机编码器 END --- */

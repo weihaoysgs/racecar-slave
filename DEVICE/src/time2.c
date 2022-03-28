@@ -18,7 +18,7 @@ void Encoder_Init_TIM2(void)
     GPIO_Init(GPIOB, &GPIO_InitStructure);                //根据设定参数初始化GPIOB
     TIM_TimeBaseStructInit(&TIM_TimeBaseStructure);
     TIM_TimeBaseStructure.TIM_Prescaler = 0x0;                  // 预分频器
-    TIM_TimeBaseStructure.TIM_Period = 65535;                   //设定计数器自动重装值
+    TIM_TimeBaseStructure.TIM_Period = 3300;                   //设定计数器自动重装值
     TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;     //选择时钟分频：不分频
     TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up; ////TIM向上计数
     TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);

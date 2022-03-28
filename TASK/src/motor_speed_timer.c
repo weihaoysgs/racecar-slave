@@ -1,46 +1,48 @@
 #include "motor_speed_timer.h"
 #include "encoder.h"
 
-extern osTimerId motorSpeedCalcTimerHandle;
 static int32_t motor_left_speed = 0;
 static int32_t motor_right_speed = 0;
-static const uint16_t servo_init_pulse = 200;
 
-void StartTimer2Timer3AndStartMotorSpeedCalcTimer(void)
-{
-    LL_TIM_CC_EnableChannel(TIM2, LL_TIM_CHANNEL_CH1);
-    LL_TIM_CC_EnableChannel(TIM2, LL_TIM_CHANNEL_CH2);
-    LL_TIM_ClearFlag_UPDATE(TIM2);
-    LL_TIM_EnableIT_UPDATE(TIM2);
-    LL_TIM_EnableCounter(TIM2);
-    LL_TIM_CC_EnableChannel(TIM3, LL_TIM_CHANNEL_CH1);
-    LL_TIM_CC_EnableChannel(TIM3, LL_TIM_CHANNEL_CH2);
-    LL_TIM_ClearFlag_UPDATE(TIM3);
-    LL_TIM_EnableIT_UPDATE(TIM3);
-    LL_TIM_EnableCounter(TIM3);
-    osTimerStart(motorSpeedCalcTimerHandle, 80);
+static struct rt_timer motor_speed_clc_timer;
+
+void motorSpeedClcTimerCallback(void* parameter);
+
+rt_timer_t Get_Motor_Speed_Clc_Timer_Object(void) {
+    return &motor_speed_clc_timer;
 }
 
-void motorSpeedClcTimerCallback(void const *argument)
+void Motor_Speed_Clc_Timer_Init(void) {
+    rt_timer_init(&motor_speed_clc_timer,
+                  "timer1",                   /* 定时器名字是 timer1 */
+                  motorSpeedClcTimerCallback, /* 超时时回调的处理函数 */
+                  RT_NULL,                    /* 超时函数的入口参数 */
+                  50,                         /* 定时长度，以 OS Tick 为单位，即 10 个 OS Tick */
+                  RT_TIMER_FLAG_PERIODIC);    /* 周期性定时器 */
+}
+
+void motorSpeedClcTimerCallback(void* parameter)
 {
     motor_left_speed = GetTim2EncoderChangedValue();
     motor_right_speed = GetTim3EncoderChangedValue();
 }
 
-int32_t GetMotorLeftSpeed(void)
-{
+/**
+ * @brief Get the Motor Left Speed
+ * 
+ * @return int32_t 电机速度
+ */
+int32_t GetMotorLeftSpeed(void) {
     return motor_left_speed;
 }
 
-int32_t GetMotorRightSpeed(void)
-{
+/**
+ * @brief Get the Motor Right Speed
+ * 
+ * @return int32_t 电机速度
+ */
+int32_t GetMotorRightSpeed(void) {
     return motor_right_speed;
 }
 
-void StartServoTimer(void)
-{
-    LL_TIM_CC_EnableChannel(TIM1, LL_TIM_CHANNEL_CH1); //! Enable capture/compare channels.
-    LL_TIM_EnableAllOutputs(TIM1);                     //! Enable all output
-    LL_TIM_EnableCounter(TIM1);                        //! Enable timer counter.
-    // LL_TIM_OC_SetCompareCH1(TIM1, servo_init_pulse);
-}
+

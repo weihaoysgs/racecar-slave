@@ -1,4 +1,6 @@
 #include "chassis_task.h"
+#include "motor_speed_timer.h"
+#include "usart4.h"
 
 /* relate to thread BEGIN */
 ALIGN(RT_ALIGN_SIZE)
@@ -27,8 +29,8 @@ rt_thread_t Get_Chassis_Thread_Object(void) {
 static void Chassis_Thread(void *param) {
 	rt_thread_delay(1000);
 	for (;;) {
-		// printf("hello");
+		printf("%d %d\r\n", GetMotorLeftSpeed(), GetMotorRightSpeed());
 		LED_TOGGLE();
-		rt_thread_delay(1000);
+		rt_thread_delay(51);
 	}
 }

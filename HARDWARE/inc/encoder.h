@@ -1,8 +1,7 @@
 #ifndef _ENCODER_H_
 #define _ENCODER_H_
 
-#include "stm32f1xx.h"
-#include "stm32f1xx_ll_tim.h"
+#include "stm32f10x.h"
 
 int32_t GetTim2EncoderChangedValue(void);
 void Tim2InterruptCallback(void);
