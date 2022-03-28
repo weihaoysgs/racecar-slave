@@ -23,12 +23,12 @@ int fputc(int ch, FILE *f)
 
 #endif
 
-static char uart4_dma_rx_buf[128];
+static uint8_t uart4_dma_rx_buf[128];
 static uint8_t uart4_dma_rxd_length = 0;
 static const uint16_t uart4_dma_rx_max_size = 128;
 // PC10 -> Tx
 // PC11 -> Rx
-void Uart4_Init()
+void Uart4_Init(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 	USART_InitTypeDef USART_InitStructure;
@@ -105,4 +105,14 @@ void UART4_IRQHandler(void)
 
 		DMA_Cmd(DMA2_Channel3, ENABLE);
 	}
+}
+
+uint8_t* Get_Uart4_Rxd_Length(void)
+{
+	return &uart4_dma_rxd_length;
+}
+
+uint8_t *Get_Uart4_Rxd_Buffer(void)
+{
+	return uart4_dma_rx_buf;
 }
