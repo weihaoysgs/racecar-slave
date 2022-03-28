@@ -663,6 +663,11 @@
               <FileType>1</FileType>
               <FilePath>..\DEVICE\src\time3.c</FilePath>
             </File>
+            <File>
+              <FileName>time8.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\DEVICE\src\time8.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -697,6 +702,11 @@
               <FileName>delay.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\LIBS\src\delay.c</FilePath>
+            </File>
+            <File>
+              <FileName>pid.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\LIBS\src\pid.c</FilePath>
             </File>
           </Files>
         </Group>

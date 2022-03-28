@@ -8,7 +8,8 @@ static char chassis_thread_stack[512];
 static struct rt_thread chassis_thread_object;
 static void Chassis_Thread(void *param);
 
-void Chassis_Thread_Init(void) {
+void Chassis_Thread_Init(void)
+{
 	rt_thread_init(&chassis_thread_object,
 				   "chassis",
 				   Chassis_Thread,
@@ -19,18 +20,21 @@ void Chassis_Thread_Init(void) {
 				   20);
 }
 
-rt_thread_t Get_Chassis_Thread_Object(void) {
+rt_thread_t Get_Chassis_Thread_Object(void)
+{
 	return &chassis_thread_object;
 }
 /* relate to thread END */
 
-
-
-static void Chassis_Thread(void *param) {
+static void Chassis_Thread(void *param)
+{
 	rt_thread_delay(1000);
-	for (;;) {
+	for (;;)
+	{
 		printf("%d %d\r\n", GetMotorLeftSpeed(), GetMotorRightSpeed());
 		LED_TOGGLE();
 		rt_thread_delay(51);
+		TIM_SetCompare1(TIM8, 5000);
+		TIM_SetCompare2(TIM8, 0);
 	}
 }
