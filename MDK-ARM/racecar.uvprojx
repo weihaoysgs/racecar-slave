@@ -16,7 +16,7 @@
         <TargetCommonOption>
           <Device>STM32F103RC</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.4.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x0000C000) IROM(0x08000000,0x00040000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -52,9 +52,9 @@
           <OutputName>racecar</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
-          <CreateHexFile>1</CreateHexFile>
+          <CreateHexFile>0</CreateHexFile>
           <DebugInformation>1</DebugInformation>
-          <BrowseInformation>1</BrowseInformation>
+          <BrowseInformation>0</BrowseInformation>
           <ListingPath>.\Listings\</ListingPath>
           <HexFormatSelection>1</HexFormatSelection>
           <Merge32K>0</Merge32K>
@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F10X_HD,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\CMSIS;..\FWLIB\inc;..\USER</IncludePath>
+              <IncludePath>..\CMSIS;..\FWLIB\inc;..\USER;..\DEVICE\inc;..\HARDWARE\inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -532,6 +532,36 @@
               <FileName>stm32f10x_it.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\USER\stm32f10x_it.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>DEVICE</GroupName>
+          <Files>
+            <File>
+              <FileName>time1.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\DEVICE\src\time1.c</FilePath>
+            </File>
+            <File>
+              <FileName>usart4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\DEVICE\src\usart4.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>HARDWARE</GroupName>
+          <Files>
+            <File>
+              <FileName>pstwo.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\src\pstwo.c</FilePath>
+            </File>
+            <File>
+              <FileName>softiic.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\src\softiic.c</FilePath>
             </File>
           </Files>
         </Group>
