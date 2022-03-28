@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F10X_HD,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\CMSIS;..\FWLIB\inc;..\RT-Thread\bsp;..\RT-Thread\include;..\RT-Thread\include\libc;..\USER;..\DEVICE\inc;..\HARDWARE\inc;..\LIBS\inc</IncludePath>
+              <IncludePath>..\CMSIS;..\FWLIB\inc;..\RT-Thread\bsp;..\RT-Thread\include;..\RT-Thread\include\libc;..\USER;..\DEVICE\inc;..\HARDWARE\inc;..\LIBS\inc;..\TASK\inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -677,6 +677,16 @@
               <FileName>delay.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\LIBS\src\delay.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>TASK</GroupName>
+          <Files>
+            <File>
+              <FileName>chassis_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\TASK\src\chassis_task.c</FilePath>
             </File>
           </Files>
         </Group>
