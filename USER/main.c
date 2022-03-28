@@ -2,6 +2,7 @@
 #include "usart4.h"
 #include "pstwo.h"
 #include "delay.h"
+#include "time1.h"
 void Delay(u32 count)
 {
 	u32 i = 0;
@@ -12,6 +13,7 @@ int main(void)
 {
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
 	Uart4_Init();
+	Time1_Pwm_Init(2000, 719); //! 50hz
 	PS2 remoter;
 	GPIO_InitTypeDef GPIO_InitStructure;
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB |
@@ -27,6 +29,8 @@ int main(void)
 	GPIO_SetBits(GPIOE, GPIO_Pin_13);				  // PE.5 Êä³ö¸ß
 	USART_SendData(UART4, 0x0001);
 	PS2_Init();
+	TIM_SetCompare1(TIM1, 200);
+	
 	while (1)
 	{
 		Update_Ps2_Data();
