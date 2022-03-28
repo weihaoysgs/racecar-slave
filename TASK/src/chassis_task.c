@@ -1,7 +1,5 @@
 #include "chassis_task.h"
 
-#include "led.h"
-
 /* relate to thread BEGIN */
 ALIGN(RT_ALIGN_SIZE)
 static char chassis_thread_stack[512];
@@ -29,7 +27,7 @@ rt_thread_t Get_Chassis_Thread_Object(void) {
 static void Chassis_Thread(void *param) {
 	rt_thread_delay(1000);
 	for (;;) {
-
+		// printf("hello");
 		LED_TOGGLE();
 		rt_thread_delay(1000);
 	}
