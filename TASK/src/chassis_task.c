@@ -34,7 +34,7 @@ static void Chassis_Thread(void *param)
 	for (;;)
 	{
 
-		printf("tim2_cnt:%d ;tim3_cnt:%d;%d %d\r\n",TIM2->CNT,TIM3->CNT ,GetMotorLeftSpeed(), GetMotorRightSpeed());
+		printf("tim2_cnt:%u ;tim3_cnt:%u;%d %d\r\n",TIM2->CNT,TIM3->CNT ,GetMotorLeftSpeed(), GetMotorRightSpeed());
 		LED_TOGGLE();
 		rt_thread_delay(51);
 		// TIM_SetCompare1(TIM8, 5000);
