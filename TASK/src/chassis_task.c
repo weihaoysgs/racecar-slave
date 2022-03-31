@@ -25,16 +25,23 @@ rt_thread_t Get_Chassis_Thread_Object(void)
 	return &chassis_thread_object;
 }
 /* relate to thread END */
-
+PS2 *remoter;
 static void Chassis_Thread(void *param)
 {
+	remoter = Get_Remoter_Data();
 	rt_thread_delay(1000);
+	TIM2->ARR = 3300 ;
 	for (;;)
 	{
-		printf("%d %d\r\n", GetMotorLeftSpeed(), GetMotorRightSpeed());
+
+		printf("tim2_cnt:%d ;tim3_cnt:%d;%d %d\r\n",TIM2->CNT,TIM3->CNT ,GetMotorLeftSpeed(), GetMotorRightSpeed());
 		LED_TOGGLE();
 		rt_thread_delay(51);
-		TIM_SetCompare1(TIM8, 5000);
-		TIM_SetCompare2(TIM8, 0);
+		// TIM_SetCompare1(TIM8, 5000);
+		// TIM_SetCompare2(TIM8, 0);
+
+		// SetMotorLeftPower((int32_t)(remoter->ch1) * 40);
+		// SetMotorRightPower((int32_t)(remoter->ch1) * 40);
+		// printf("%d %d \r\n", (remoter->ch1) * 30, (remoter->ch1) * 30);
 	}
 }

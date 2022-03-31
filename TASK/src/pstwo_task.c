@@ -35,7 +35,8 @@ static void Pstwo_Thread(void *param)
         Update_Ps2_Data();
         Get_Rc_Data(&remoter);
         rt_thread_delay(50);
-        // printf("%d %d %d %d %d \r\n", remoter.ch0, remoter.ch1, remoter.ch2, remoter.ch3, remoter.key);
+        // printf("ch0:%d ch1:%d ch2:%d ch3:%d key:%d \r\n",
+        //        remoter.ch0, remoter.ch1, remoter.ch2, remoter.ch3, remoter.key);
     }
 }
 

@@ -6,6 +6,8 @@
 #include "rtthread.h"
 #include "usart4.h"
 #include "led.h"
+#include "pstwo_task.h"
+#include "motor.h"
 
 void Chassis_Thread_Init(void);
 rt_thread_t Get_Chassis_Thread_Object(void);
