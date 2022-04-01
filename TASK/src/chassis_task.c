@@ -30,18 +30,22 @@ static void Chassis_Thread(void *param)
 {
 	remoter = Get_Remoter_Data();
 	rt_thread_delay(1000);
-	TIM2->ARR = 3300 ;
+	// TIM_SetCompare1(TIM1, 1000);
 	for (;;)
 	{
-
-		printf("tim2_cnt:%u ;tim3_cnt:%u;%d %d\r\n",TIM2->CNT,TIM3->CNT ,GetMotorLeftSpeed(), GetMotorRightSpeed());
+		// printf("tim2_cnt:%u ;tim3_cnt:%u;%d %d\r\n", TIM2->CNT, TIM3->CNT, GetMotorLeftSpeed(), GetMotorRightSpeed());
+		rt_thread_delay(30);
+		TIM_SetCompare1(TIM1, 1500);
 		LED_TOGGLE();
-		rt_thread_delay(51);
-		// TIM_SetCompare1(TIM8, 5000);
-		// TIM_SetCompare2(TIM8, 0);
-
-		// SetMotorLeftPower((int32_t)(remoter->ch1) * 40);
-		// SetMotorRightPower((int32_t)(remoter->ch1) * 40);
-		// printf("%d %d \r\n", (remoter->ch1) * 30, (remoter->ch1) * 30);
+		// SetMotorLeftPower(3000);
+		// SetMotorRightPower(-5000);
+		printf("%d %d \r\n", (remoter->ch0), (remoter->ch0));
 	}
+}
+
+static Pid_Position_t motor_left_speed_pid = NEW_POSITION_PID(11, 0, 4.5, 2000, 16000, 0, 1000, 500);
+static Pid_Position_t motor_right_speed_pid = NEW_POSITION_PID(11, 0, 4.5, 2000, 16000, 0, 1000, 500);
+
+void Set_Chassis_Motor_Speed(void)
+{
 }

@@ -22,20 +22,19 @@ void Time8_PWM_Init(uint16_t arr, uint16_t psc)
     TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;             //! 选择定时器模式:TIM脉冲宽度调制模式1
     TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable; //! 比较输出使能
     TIM_OCInitStructure.TIM_Pulse = 0;                            //! 设置待装入捕获比较寄存器的脉冲值
-    TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;     //! 输出极性:TIM输出比较极性高
+    TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_Low;     //! 输出极性:TIM输出比较极性高
     TIM_OC1Init(TIM8, &TIM_OCInitStructure);                      //! 根据TIM_OCInitStruct中指定的参数初始化外设TIMx
     TIM_OC2Init(TIM8, &TIM_OCInitStructure);                      //! 根据TIM_OCInitStruct中指定的参数初始化外设TIMx
     TIM_OC3Init(TIM8, &TIM_OCInitStructure);                      //! 根据TIM_OCInitStruct中指定的参数初始化外设TIMx
     TIM_OC4Init(TIM8, &TIM_OCInitStructure);                      //! 根据TIM_OCInitStruct中指定的参数初始化外设TIMx
 
+    // TIM_OC1PreloadConfig(TIM8, TIM_OCPreload_Enable); //! CH1预装载使能
+    // TIM_OC2PreloadConfig(TIM8, TIM_OCPreload_Enable); //! CH1预装载使能
+    // TIM_OC3PreloadConfig(TIM8, TIM_OCPreload_Enable); //! CH1预装载使能
+    // TIM_OC4PreloadConfig(TIM8, TIM_OCPreload_Enable); //! CH4预装载使能
+
+    // TIM_ARRPreloadConfig(TIM8, ENABLE); //! 使能TIMx在ARR上的预装载寄存器
+
     TIM_CtrlPWMOutputs(TIM8, ENABLE); //! MOE 主输出使能
-
-    TIM_OC1PreloadConfig(TIM8, TIM_OCPreload_Enable); //! CH1预装载使能
-    TIM_OC2PreloadConfig(TIM8, TIM_OCPreload_Enable); //! CH1预装载使能
-    TIM_OC3PreloadConfig(TIM8, TIM_OCPreload_Enable); //! CH1预装载使能
-    TIM_OC4PreloadConfig(TIM8, TIM_OCPreload_Enable); //! CH4预装载使能
-
-    TIM_ARRPreloadConfig(TIM8, ENABLE); //! 使能TIMx在ARR上的预装载寄存器
-
     TIM_Cmd(TIM8, ENABLE); //! 使能TIM
 }
