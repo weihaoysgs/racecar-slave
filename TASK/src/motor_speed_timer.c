@@ -17,7 +17,7 @@ void Motor_Speed_Clc_Timer_Init(void) {
                   "timer1",                   /* 定时器名字是 timer1 */
                   motorSpeedClcTimerCallback, /* 超时时回调的处理函数 */
                   RT_NULL,                    /* 超时函数的入口参数 */
-                  50,                         /* 定时长度，以 OS Tick 为单位，即 10 个 OS Tick */
+                  70,                         /* 定时长度，以 OS Tick 为单位，即 10 个 OS Tick */
                   RT_TIMER_FLAG_PERIODIC);    /* 周期性定时器 */
 }
 

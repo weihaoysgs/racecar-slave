@@ -13,6 +13,10 @@ int32_t GetTim2EncoderChangedValue(void) {
 	int32_t encoder_changed_value = 0;
 	int32_t tim2_this_cnt_value = TIM2->CNT;
 	encoder_changed_value = tim2_this_cnt_value-tim2_last_cnt_value + 3300*tim2_update_direction;
+	if (encoder_changed_value < -2500)
+		encoder_changed_value += 3300;
+	if (encoder_changed_value > 2500)
+		encoder_changed_value -= 3300;
 	tim2_update_direction = 0;
 	tim2_last_cnt_value = tim2_this_cnt_value;
 	return encoder_changed_value;
@@ -44,6 +48,10 @@ int32_t GetTim3EncoderChangedValue(void) {
 	int32_t encoder_changed_value = 0;
 	int32_t tim3_this_cnt_value = TIM3->CNT;
 	encoder_changed_value = tim3_this_cnt_value-tim3_last_cnt_value + 3300*tim3_update_direction;
+	if (encoder_changed_value < -2500)
+		encoder_changed_value += 3300;
+	if (encoder_changed_value > 2500)
+		encoder_changed_value -= 3300;
 	tim3_update_direction = 0;
 	tim3_last_cnt_value = tim3_this_cnt_value;
 	return encoder_changed_value;
