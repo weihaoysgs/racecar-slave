@@ -8,13 +8,13 @@
 #include "time1.h"
 
 /**
- * @brief ÍâÉè³õÊ¼»¯
+ * @brief ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½
  *
  */
 void Peripheral_Init(void)
 {
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE); // ÐèÒªÊ¹ÄÜAFIOÊ±ÖÓ
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE); // ï¿½ï¿½ÒªÊ¹ï¿½ï¿½AFIOÊ±ï¿½ï¿½
     GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);
 
     Led_Init();
@@ -27,5 +27,5 @@ void Peripheral_Init(void)
     Encoder_Init_TIM3();
 
     // 800 - 2200
-    Time1_Pwm_Init(19999, 35);
+    Time1_Pwm_Init1(9999, 71);
 }
