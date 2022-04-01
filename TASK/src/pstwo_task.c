@@ -28,8 +28,9 @@ static PS2 remoter;
 static void Pstwo_Thread(void *param)
 {
     rt_thread_delay(1000);
-    PS2_Init();
 
+    PS2_Init();
+    PS2_ClearData();
     for (;;)
     {
         Update_Ps2_Data();

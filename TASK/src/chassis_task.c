@@ -27,18 +27,55 @@ rt_thread_t Get_Chassis_Thread_Object(void)
 /* relate to thread END */
 
 PS2 *remoter;
+static const uint16_t servo_midle_value = 2000;
+static const uint16_t servo_min_value = 1600;
+static const uint16_t servo_max_value = 2395;
+static uint8_t encoder_send_buffer[11];
+
+static uint8_t encoder_hader_one = 0xFF;
+static uint8_t encoder_hader_two = 0xEE;
+static uint8_t encoder_tail = 0xDD;
+
+static int32_t left_encoder_changed_value;
+static int32_t right_encoder_changed_value;
+
 static void Chassis_Thread(void *param)
 {
 	remoter = Get_Remoter_Data();
+	uint16_t servo_pulse;
 	rt_thread_delay(1000);
 	for (;;)
 	{
-		rt_thread_delay(30);
 		LED_TOGGLE();
-		// SetMotorLeftPower(3000);
-		// SetMotorRightPower(5000);
-		printf("tim2 %d,tim3 %d ;speed_left:%d; speed_right:%d \r\n", TIM2->CNT, TIM3->CNT,GetMotorLeftSpeed(),GetMotorRightSpeed());
-		// Set_Chassis_Motor_Speed(remoter->ch0 * 30, remoter->ch0 * 30);
+		encoder_send_buffer[0] = encoder_hader_one;
+		encoder_send_buffer[1] = encoder_hader_two;
+
+		right_encoder_changed_value = GetMotorRightSpeed();
+		left_encoder_changed_value = GetMotorLeftSpeed();
+
+		encoder_send_buffer[2] = left_encoder_changed_value >> 24;
+		encoder_send_buffer[3] = left_encoder_changed_value >> 16;
+		encoder_send_buffer[4] = left_encoder_changed_value >> 8;
+		encoder_send_buffer[5] = left_encoder_changed_value;
+
+		encoder_send_buffer[6] = right_encoder_changed_value >> 24;
+		encoder_send_buffer[7] = right_encoder_changed_value >> 16;
+		encoder_send_buffer[8] = right_encoder_changed_value >> 8;
+		encoder_send_buffer[9] = right_encoder_changed_value;
+		encoder_send_buffer[10] = encoder_tail;
+
+		// int32_t left = encoder_send_buffer[2] << 24 | encoder_send_buffer[3] << 16 | encoder_send_buffer[4] << 8 | encoder_send_buffer[5];
+		// int32_t right = encoder_send_buffer[6] << 24 | encoder_send_buffer[7] << 16 | encoder_send_buffer[8] << 8 | encoder_send_buffer[9];
+		// printf("%d %d \r\n", left, right);
+
+		Usart4_Dma_Send((uint32_t )encoder_send_buffer, 11);
+
+		// servo_pulse = 1501 + (uint16_t)((remoter->ch0 + 128) * 3.90);
+		// Int16_Constrain(&servo_pulse, servo_min_value, servo_max_value);
+		// TIM_SetCompare1(TIM1, servo_pulse);
+		// Set_Chassis_Motor_Speed(remoter->ch3 * 30, remoter->ch3 * 30);
+
+		rt_thread_delay(10);
 	}
 }
 
@@ -49,7 +86,14 @@ void Set_Chassis_Motor_Speed(float left_motor_speed, float right_motor_speed)
 {
 	int16_t pid_left = Pid_Position_Calc(&motor_left_speed_pid, left_motor_speed, (float)GetMotorLeftSpeed());
 	int16_t pid_right = Pid_Position_Calc(&motor_right_speed_pid, right_motor_speed, (float)GetMotorRightSpeed());
-	printf("%d %d\r\n", pid_left, pid_right);
 	SetMotorLeftPower(pid_left);
 	SetMotorRightPower(pid_right);
+}
+
+void Int16_Constrain(uint16_t *data, const uint16_t min_value, const uint16_t max_value)
+{
+	if (*data > max_value)
+		*data = max_value;
+	else if (*data < min_value)
+		*data = min_value;
 }
