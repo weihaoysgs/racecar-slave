@@ -14,7 +14,7 @@ void Time1_Pwm_Init(uint32_t arr, uint32_t psc)
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;                              
     GPIO_Init(GPIOA, &GPIO_InitStructure);                                          
 
-    TIM_TimeBaseStructure.TIM_Prescaler = psc;                  
+    TIM_TimeBaseStructure.TIM_Prescaler = psc;
     TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;  
     TIM_TimeBaseStructure.TIM_Period = arr;                      
     TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
@@ -27,8 +27,6 @@ void Time1_Pwm_Init(uint32_t arr, uint32_t psc)
     TIM_OC1Init(TIM1, &TIM_OCInitStructure);                      
 
     TIM_OC1PreloadConfig(TIM1, TIM_OCPreload_Enable); 
-
-    TIM_ARRPreloadConfig(TIM1, ENABLE);  
-
+    TIM_CtrlPWMOutputs(TIM1, ENABLE);
     TIM_Cmd(TIM1, ENABLE);  
 }
