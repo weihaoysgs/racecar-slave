@@ -12,5 +12,6 @@
 
 void Chassis_Thread_Init(void);
 rt_thread_t Get_Chassis_Thread_Object(void);
+void Set_Chassis_Motor_Speed(float left_motor_speed, float right_motor_speed);
 
 #endif // __CHASSIS_TASK_H_

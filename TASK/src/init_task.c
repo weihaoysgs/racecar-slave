@@ -27,5 +27,5 @@ void Peripheral_Init(void)
     Encoder_Init_TIM3();
 
     // 800 - 2200
-    Time1_Pwm_Init1(9999, 71);
+    Time1_Pwm_Init(4000, 71);
 }
