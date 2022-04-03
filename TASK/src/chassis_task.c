@@ -44,6 +44,10 @@ static void Chassis_Thread(void *param)
 	remoter = Get_Remoter_Data();
 	uint16_t servo_pulse;
 	rt_thread_delay(1000);
+	(void)servo_pulse;
+	(void)servo_midle_value;
+	(void)servo_min_value;
+	(void)servo_max_value;
 	for (;;)
 	{
 		LED_TOGGLE();
@@ -75,7 +79,7 @@ static void Chassis_Thread(void *param)
 		// TIM_SetCompare1(TIM1, servo_pulse);
 		// Set_Chassis_Motor_Speed(remoter->ch3 * 30, remoter->ch3 * 30);
 
-		rt_thread_delay(10);
+		rt_thread_delay(50); 
 	}
 }
 

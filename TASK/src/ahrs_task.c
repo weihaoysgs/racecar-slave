@@ -29,6 +29,7 @@ static void Ahrs_Thread(void *param)
 	uint8_t ahrs_data[20];
 	static const uint8_t HEAD = 0xFF;
 	static const uint8_t TAIL = 0xDD;
+	(void)ahrs_data;
 	for (;;)
 	{
 		READ_MPU9250_ACCEL();
