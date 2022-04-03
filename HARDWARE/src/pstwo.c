@@ -304,7 +304,7 @@ void Update_Ps2_Data(void)
 }
 
 
-void Get_Rc_Data(PS2* rc)
+void Get_Rc_Dataps2(PS2* rc)
 {
     rc->ch0 = (int8_t)(Data[5] - 128);
 		rc->ch1 = -(int8_t)(Data[6] - 127);

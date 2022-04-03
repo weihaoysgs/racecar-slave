@@ -4,9 +4,9 @@
 #include "stm32f10x.h"
 #include "sys.h"
 /*
-ºìµÆÄ£Ê½Ê±£º ×óÓÒÒ¡¸Ë·¢ËÍÄ£ÄâÖµ£¬ 0x00-0xFF Ö®¼ä£¬ÇÒÒ¡¸Ë°´ÏÂµÄ¼üÖµ L3¡¢ R3 ÓÐÐ§£»
-ÂÌµÆÄ£Ê½Ê±£º ×óÓÒÒ¡¸ËÄ£ÄâÖµÎªÎÞÐ§£¬ÍÆµ½¼«ÏÞÊ±£¬¶ÔÓ¦·¢ËÍ UP¡¢ RIGHT¡¢ DOWN¡¢LEFT¡¢
-¡÷¡¢ ©–¡¢ X¡¢ ¡õ£¬°´¼ü L3¡¢ R3 ÎÞÐ§¡£
+ï¿½ï¿½ï¿½Ä£Ê½Ê±ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ò¡ï¿½Ë·ï¿½ï¿½ï¿½Ä£ï¿½ï¿½Öµï¿½ï¿½ 0x00-0xFF Ö®ï¿½ä£¬ï¿½ï¿½Ò¡ï¿½Ë°ï¿½ï¿½ÂµÄ¼ï¿½Öµ L3ï¿½ï¿½ R3 ï¿½ï¿½Ð§ï¿½ï¿½
+ï¿½Ìµï¿½Ä£Ê½Ê±ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ò¡ï¿½ï¿½Ä£ï¿½ï¿½ÖµÎªï¿½ï¿½Ð§ï¿½ï¿½ï¿½Æµï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ UPï¿½ï¿½ RIGHTï¿½ï¿½ DOWNï¿½ï¿½LEFTï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Xï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ L3ï¿½ï¿½ R3 ï¿½ï¿½Ð§ï¿½ï¿½
 */
  
 //These are our button constants
@@ -36,7 +36,7 @@
 //#define WHAMMY_BAR		8
  
 //These are stick values
-#define PSS_RX 5             //ÓÒÒ¡¸ËXÖáÊý¾Ý  
+#define PSS_RX 5             //ï¿½ï¿½Ò¡ï¿½ï¿½Xï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  
 #define PSS_RY 6
 #define PSS_LX 7
 #define PSS_LY 8
@@ -47,31 +47,31 @@ extern u16 MASK[16];
 
 typedef struct
 {
-	int8_t ch0;  //ÓÒX Data[5];
-	int8_t ch1;  //ÓÒy Data[6];
-	int8_t ch2;  //×óx Data[7];
-	int8_t ch3;  //×óy Data[8];
+	int8_t ch0;  //ï¿½ï¿½X Data[5];
+	int8_t ch1;  //ï¿½ï¿½y Data[6];
+	int8_t ch2;  //ï¿½ï¿½x Data[7];
+	int8_t ch3;  //ï¿½ï¿½y Data[8];
 	
-	uint8_t key;  //°´¼üÖµ
+	uint8_t key;  //ï¿½ï¿½ï¿½ï¿½Öµ
 }PS2;
 
 
 void PS2_Init(void);
-u8 PS2_RedLight(void);       //ÅÐ¶ÏÊÇ·ñÎªºìµÆÄ£Ê½
-void PS2_ReadData(void);     //¶ÁÊÖ±úÊý¾Ý
-void PS2_Cmd(u8 CMD);		      //ÏòÊÖ±ú·¢ËÍÃüÁî
-u8 PS2_DataKey(void);		        //°´¼üÖµ¶ÁÈ¡
-u8 PS2_AnologData(u8 button);   //µÃµ½Ò»¸öÒ¡¸ËµÄÄ£ÄâÁ¿
-void PS2_ClearData(void);	      //Çå³ýÊý¾Ý»º³åÇø
-void PS2_Vibration(u8 motor1, u8 motor2);   //Õñ¶¯ÉèÖÃmotor1  0xFF¿ª£¬ÆäËû¹Ø£¬motor2  0x40~0xFF
+u8 PS2_RedLight(void);       //ï¿½Ð¶ï¿½ï¿½Ç·ï¿½Îªï¿½ï¿½ï¿½Ä£Ê½
+void PS2_ReadData(void);     //ï¿½ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½
+void PS2_Cmd(u8 CMD);		      //ï¿½ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+u8 PS2_DataKey(void);		        //ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½È¡
+u8 PS2_AnologData(u8 button);   //ï¿½Ãµï¿½Ò»ï¿½ï¿½Ò¡ï¿½Ëµï¿½Ä£ï¿½ï¿½ï¿½ï¿½
+void PS2_ClearData(void);	      //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý»ï¿½ï¿½ï¿½ï¿½ï¿½
+void PS2_Vibration(u8 motor1, u8 motor2);   //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½motor1  0xFFï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø£ï¿½motor2  0x40~0xFF
  
-void PS2_EnterConfing(void);	    //½øÈëÅäÖÃ
-void PS2_TurnOnAnalogMode(void);   //·¢ËÍÄ£ÄâÁ¿
-void PS2_VibrationMode(void);      //Õñ¶¯ÉèÖÃ
-void PS2_ExitConfing(void);	       //Íê³ÉÅäÖÃ
-void PS2_SetInit(void);		         //ÅäÖÃ³õÊ¼»¯
+void PS2_EnterConfing(void);	    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+void PS2_TurnOnAnalogMode(void);   //ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½
+void PS2_VibrationMode(void);      //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+void PS2_ExitConfing(void);	       //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+void PS2_SetInit(void);		         //ï¿½ï¿½ï¿½Ã³ï¿½Ê¼ï¿½ï¿½
  
  
 void Update_Ps2_Data(void);
-void Get_Rc_Data(PS2* rc);
+void Get_Rc_Dataps2(PS2* rc);
 #endif //_PSTWO_H_

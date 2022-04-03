@@ -26,7 +26,7 @@ rt_thread_t Get_Chassis_Thread_Object(void)
 }
 /* relate to thread END */
 
-PS2 *remoter;
+// PS2 *remoter;
 static const uint16_t servo_midle_value = 2000;
 static const uint16_t servo_min_value = 1600;
 static const uint16_t servo_max_value = 2395;
@@ -41,7 +41,7 @@ static int32_t right_encoder_changed_value;
 
 static void Chassis_Thread(void *param)
 {
-	remoter = Get_Remoter_Data();
+	// remoter = Get_Remoter_Data();
 	uint16_t servo_pulse;
 	rt_thread_delay(1000);
 	(void)servo_pulse;
