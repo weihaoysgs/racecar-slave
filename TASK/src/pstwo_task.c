@@ -25,19 +25,26 @@ rt_thread_t Get_Pstwo_Thread_Object(void)
 /* relate to thread END */
 
 static PS2 remoter;
+
+static uint8_t *uart4_rx_buffer;
+static uint8_t *uart4_rxd_len;
+
 static void Pstwo_Thread(void *param)
 {
+    uart4_rx_buffer = Get_Uart4_Rxd_Buffer();
+    uart4_rxd_len = Get_Uart4_Rxd_Length();
     rt_thread_delay(1000);
 
-    PS2_Init();
-    PS2_ClearData();
+    USART_ITConfig(UART4, USART_IT_IDLE, ENABLE);
+    
     for (;;)
     {
-        Update_Ps2_Data();
-        Get_Rc_Data(&remoter);
-        rt_thread_delay(50);
-        // printf("ch0:%d ch1:%d ch2:%d ch3:%d key:%d \r\n",
-        //        remoter.ch0, remoter.ch1, remoter.ch2, remoter.ch3, remoter.key);
+        // for (uint8_t i = 0; i < *uart4_rxd_len; i++)
+        // {
+        //     printf("%x hello", uart4_rx_buffer[i]);
+        // }
+        printf("%d\r\n",*uart4_rxd_len);
+        rt_thread_delay(30);
     }
 }
 

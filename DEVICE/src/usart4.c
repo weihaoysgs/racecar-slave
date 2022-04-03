@@ -1,31 +1,8 @@
 #include "usart4.h"
 
-#if 1
-#pragma import(__use_no_semihosting)
-
-struct __FILE
-{
-	int handle;
-};
-
-FILE __stdout;
-void _sys_exit(int x)
-{
-	x = x;
-}
-int fputc(int ch, FILE *f)
-{
-	while ((UART4->SR & 0X40) == 0)
-		;
-	UART4->DR = (u8)ch;
-	return ch;
-}
-
-#endif
-
-static uint8_t uart4_dma_rx_buf[128];
+static uint8_t uart4_dma_rx_buf[50];
 static uint8_t uart4_dma_rxd_length = 0;
-static const uint16_t uart4_dma_rx_max_size = 128;
+static const uint16_t uart4_dma_rx_max_size = 50;
 static uint8_t usart4_dma_tx_buffer[256];
 static const uint16_t usart4_dma_send_max_len = 256;
 
@@ -72,15 +49,19 @@ void Uart4_Init(void)
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
 
+	NVIC_InitStructure.NVIC_IRQChannel = DMA2_Channel3_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 4;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	NVIC_Init(&NVIC_InitStructure);
+
 	//! 串口4空闲中断（一帧数据接收完毕）
 	USART_ITConfig(UART4, USART_IT_IDLE, DISABLE);
-	USART_DMACmd(UART4, USART_DMAReq_Rx, ENABLE);
-	USART_Cmd(UART4, ENABLE);
 
 	//! DMA2流3 串口4接收
 	DMA_DeInit(DMA2_Channel3);
 
-	DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t) & (UART4->DR);
+	DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)(UART4->DR);
 	DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)uart4_dma_rx_buf;
 	DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC;
 	DMA_InitStructure.DMA_BufferSize = uart4_dma_rx_max_size;
@@ -91,33 +72,37 @@ void Uart4_Init(void)
 	DMA_InitStructure.DMA_Mode = DMA_Mode_Circular; //! 接收开启循环模式
 	DMA_InitStructure.DMA_Priority = DMA_Priority_High;
 	DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
+	DMA_Init(DMA2_Channel3, &DMA_InitStructure);
 
 	DMA_DeInit(DMA2_Channel5);
 
-	DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)(&UART4->DR);	
-	DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)usart4_dma_tx_buffer;	
-	DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralDST;						
-	DMA_InitStructure.DMA_BufferSize = usart4_dma_send_max_len;				
-	DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;		
-	DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;					
-	DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte; 
-	DMA_InitStructure.DMA_MemoryDataSize = DMA_PeripheralDataSize_Byte;		
-	DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;							
-	DMA_InitStructure.DMA_Priority = DMA_Priority_High;						
+	DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)(&UART4->DR);
+	DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)usart4_dma_tx_buffer;
+	DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralDST;
+	DMA_InitStructure.DMA_BufferSize = usart4_dma_send_max_len;
+	DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+	DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+	DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+	DMA_InitStructure.DMA_MemoryDataSize = DMA_PeripheralDataSize_Byte;
+	DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
+	DMA_InitStructure.DMA_Priority = DMA_Priority_High;
 	DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
+	DMA_Init(DMA2_Channel5, &DMA_InitStructure);
 
-	DMA_Init(DMA2_Channel5,&DMA_InitStructure);
-	DMA_Cmd(DMA2_Channel5, ENABLE);
 	USART_DMACmd(UART4, USART_DMAReq_Tx, ENABLE);
+	USART_DMACmd(UART4, USART_DMAReq_Rx, ENABLE);
+
 	DMA_ITConfig(DMA2_Channel5, DMA_IT_TC, ENABLE);
 
-	DMA_Init(DMA2_Channel3, &DMA_InitStructure);
+	DMA_Cmd(DMA2_Channel5, ENABLE);
 	DMA_Cmd(DMA2_Channel3, ENABLE);
-	USART_ITConfig(UART4, USART_IT_IDLE, ENABLE);
+
+	USART_Cmd(UART4, ENABLE);
 }
 
 void UART4_IRQHandler(void)
 {
+	printf("helo\r\n");
 	if (USART_GetITStatus(UART4, USART_IT_IDLE) != RESET)
 	{
 		DMA_Cmd(DMA2_Channel3, DISABLE);
@@ -128,8 +113,6 @@ void UART4_IRQHandler(void)
 		uart4_dma_rxd_length = uart4_dma_rx_max_size - DMA_GetCurrDataCounter(DMA2_Channel3);
 
 		DMA_SetCurrDataCounter(DMA2_Channel3, uart4_dma_rx_max_size);
-
-		// Shell_Get_Data();
 
 		DMA_Cmd(DMA2_Channel3, ENABLE);
 	}
@@ -145,14 +128,13 @@ uint8_t *Get_Uart4_Rxd_Buffer(void)
 	return uart4_dma_rx_buf;
 }
 
-
 void DMA2_Channel4_5_IRQHandler(void)
 {
 	if (DMA_GetFlagStatus(DMA2_FLAG_TC5) == SET)
 	{
-		DMA_Cmd(DMA2_Channel5, DISABLE);								
-		DMA_SetCurrDataCounter(DMA2_Channel5, usart4_dma_send_max_len); 
-		DMA_ClearFlag(DMA2_FLAG_TC5);									
+		DMA_Cmd(DMA2_Channel5, DISABLE);
+		DMA_SetCurrDataCounter(DMA2_Channel5, usart4_dma_send_max_len);
+		DMA_ClearFlag(DMA2_FLAG_TC5);
 	}
 }
 
