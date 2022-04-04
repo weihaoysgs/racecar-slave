@@ -106,5 +106,6 @@ void Send_Chessis_Encoder2Ros(uint8_t *buffer, const uint8_t size)
 void Set_Racecar_Direction(uint16_t *pulse)
 {
 	TIM_SetCompare1(TIM1, *pulse);
+	TIM_SetCompare4(TIM1, *pulse);
 	Int16_Constrain(pulse, servo_limit_value_t.min_, servo_limit_value_t.max_);
 }

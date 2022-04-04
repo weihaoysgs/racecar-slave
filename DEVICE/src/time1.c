@@ -9,7 +9,7 @@ void Time1_Pwm_Init(u16 arr, u16 psc)
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
 
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8 | GPIO_Pin_11;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;                                     
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;                              
     GPIO_Init(GPIOA, &GPIO_InitStructure);                                          
@@ -25,9 +25,18 @@ void Time1_Pwm_Init(u16 arr, u16 psc)
     TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;  
     TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;  
 	TIM_OCInitStructure.TIM_Pulse = 2000;   
-    TIM_OC1Init(TIM1, &TIM_OCInitStructure);                      
+    TIM_OC1Init(TIM1, &TIM_OCInitStructure); 
+
+    TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;              
+    TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;  
+    TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;  
+	TIM_OCInitStructure.TIM_Pulse = 2000;   
+    TIM_OC4Init(TIM1, &TIM_OCInitStructure);                      
 
     TIM_OC1PreloadConfig(TIM1, TIM_OCPreload_Enable); 
+    TIM_OC4PreloadConfig(TIM1, TIM_OCPreload_Enable); 
     TIM_CtrlPWMOutputs(TIM1, ENABLE);
     TIM_Cmd(TIM1, ENABLE);  
+
+    TIM_SetCompare4(TIM1,2000);
 }
