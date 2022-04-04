@@ -39,32 +39,34 @@ static void Chassis_Thread(void *param)
 {
 	rc_data_pt = Get_Rc_Data();
 	uint16_t servo_pulse;
-	rt_thread_delay(1000);
+	rt_thread_delay(2000);
 	(void)servo_pulse;
 
 	for (;;)
 	{
-		Send_Chessis_Encoder2Ros(encoder_send_buffer, send_buffer_size);
-		printf("ch1:%d  ch2:%d  ch3:%d  ch4:%d  \r\n", rc_data_pt->ch1, rc_data_pt->ch2, rc_data_pt->ch3-1000, rc_data_pt->ch4);
+		// Send_Chessis_Encoder2Ros(encoder_send_buffer, send_buffer_size);
+		// printf("ch1:%d  ch2:%d  ch3:%d  ch4:%d  \r\n", rc_data_pt->ch1, rc_data_pt->ch2, rc_data_pt->ch3-1000, rc_data_pt->ch4);
 
-		servo_pulse = rc_data_pt->ch1 * 2;
+		// servo_pulse = rc_data_pt->ch1 * 2;
 
-		Set_Racecar_Direction(&servo_pulse);
-		Set_Chassis_Motor_Speed(rc_data_pt->ch3 - 1000, rc_data_pt->ch3 - 1000);
-
+		// Set_Racecar_Direction(&servo_pulse);
+		// Set_Chassis_Motor_Speed((float)Joystick_Raw_To_Normal_Data(rc_data_pt->ch3)/3, 
+		// 						(float)Joystick_Raw_To_Normal_Data(rc_data_pt->ch3)/3);
+		SetMotorLeftPower(Output_Smoothing(Joystick_Raw_To_Normal_Data(rc_data_pt->ch3)*10));
+		//SetMotorLeftPower(Joystick_Raw_To_Normal_Data(rc_data_pt->ch3)*10);
+		printf("%d,%d\r\n", Joystick_Raw_To_Normal_Data(rc_data_pt->ch3)*10, GetMotorLeftSpeed());
 		LED_TOGGLE();
-		rt_thread_delay(50);
+		rt_thread_delay(20);
 	}
 }
 
 void Set_Chassis_Motor_Speed(float left_motor_speed, float right_motor_speed)
 {
-	static Pid_Position_t motor_left_speed_pid = NEW_POSITION_PID(10, 0, 4.5, 2000, 7000, 0, 1000, 500);
-	static Pid_Position_t motor_right_speed_pid = NEW_POSITION_PID(10, 0, 4.5, 2000, 7000, 0, 1000, 500);
-
-	int16_t pid_left = Pid_Position_Calc(&motor_left_speed_pid, left_motor_speed, (float)GetMotorLeftSpeed());
+	static Pid_Position_t motor_left_speed_pid = NEW_POSITION_PID(20, 0, 0, 200, 7199, 0, 1000, 500);
+	static Pid_Position_t motor_right_speed_pid = NEW_POSITION_PID(16, 6, 2, 200, 7199, 0, 1000, 500);
+	int16_t pid_left = Pid_Position_Calc(&motor_left_speed_pid, -left_motor_speed, (float)GetMotorLeftSpeed());
 	int16_t pid_right = Pid_Position_Calc(&motor_right_speed_pid, right_motor_speed, (float)GetMotorRightSpeed());
-	SetMotorLeftPower(pid_left);
+	SetMotorLeftPower(Output_Smoothing(pid_left));
 	SetMotorRightPower(pid_right);
 }
 
