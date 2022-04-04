@@ -26,7 +26,6 @@ rt_thread_t Get_Chassis_Thread_Object(void)
 }
 /* relate to thread END */
 
-// PS2 *remoter;
 static const uint16_t servo_midle_value = 2000;
 static const uint16_t servo_min_value = 1600;
 static const uint16_t servo_max_value = 2395;
