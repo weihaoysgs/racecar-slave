@@ -24,67 +24,44 @@ rt_thread_t Get_Chassis_Thread_Object(void)
 }
 /* relate to thread END */
 
-static const uint16_t servo_midle_value = 2000;
-static const uint16_t servo_min_value = 1600;
-static const uint16_t servo_max_value = 2395;
-static uint8_t encoder_send_buffer[11];
+static const Rc_Data_t *rc_data_pt;
 
-static uint8_t encoder_hader_one = 0xFF;
-static uint8_t encoder_hader_two = 0xEE;
-static uint8_t encoder_tail = 0xDD;
+static const Servo_Construction_Value_t servo_limit_value_t =
+	{
+		.max_ = 2395,
+		.middle = 2000,
+		.min_ = 1600};
 
-static int32_t left_encoder_changed_value;
-static int32_t right_encoder_changed_value;
+static const uint8_t send_buffer_size = 11;
+static uint8_t encoder_send_buffer[send_buffer_size];
 
 static void Chassis_Thread(void *param)
 {
-	// remoter = Get_Remoter_Data();
+	rc_data_pt = Get_Rc_Data();
 	uint16_t servo_pulse;
 	rt_thread_delay(1000);
 	(void)servo_pulse;
-	(void)servo_midle_value;
-	(void)servo_min_value;
-	(void)servo_max_value;
 
 	for (;;)
 	{
+		Send_Chessis_Encoder2Ros(encoder_send_buffer, send_buffer_size);
+		printf("ch1:%d  ch2:%d  ch3:%d  ch4:%d  \r\n", rc_data_pt->ch1, rc_data_pt->ch2, rc_data_pt->ch3-1000, rc_data_pt->ch4);
+
+		servo_pulse = rc_data_pt->ch1 * 2;
+
+		Set_Racecar_Direction(&servo_pulse);
+		Set_Chassis_Motor_Speed(rc_data_pt->ch3 - 1000, rc_data_pt->ch3 - 1000);
+
 		LED_TOGGLE();
-		encoder_send_buffer[0] = encoder_hader_one;
-		encoder_send_buffer[1] = encoder_hader_two;
-
-		right_encoder_changed_value = GetMotorRightSpeed();
-		left_encoder_changed_value = GetMotorLeftSpeed();
-
-		encoder_send_buffer[2] = left_encoder_changed_value >> 24;
-		encoder_send_buffer[3] = left_encoder_changed_value >> 16;
-		encoder_send_buffer[4] = left_encoder_changed_value >> 8;
-		encoder_send_buffer[5] = left_encoder_changed_value;
-
-		encoder_send_buffer[6] = right_encoder_changed_value >> 24;
-		encoder_send_buffer[7] = right_encoder_changed_value >> 16;
-		encoder_send_buffer[8] = right_encoder_changed_value >> 8;
-		encoder_send_buffer[9] = right_encoder_changed_value;
-		encoder_send_buffer[10] = encoder_tail;
-
-		// int32_t left = encoder_send_buffer[2] << 24 | encoder_send_buffer[3] << 16 | encoder_send_buffer[4] << 8 | encoder_send_buffer[5];
-		// int32_t right = encoder_send_buffer[6] << 24 | encoder_send_buffer[7] << 16 | encoder_send_buffer[8] << 8 | encoder_send_buffer[9];
-		// printf("%d %d \r\n", left, right);
-		Usart1_Dma_Send((uint32_t)encoder_send_buffer, 11);
-
-		// servo_pulse = 1501 + (uint16_t)((remoter->ch0 + 128) * 3.90);
-		// Int16_Constrain(&servo_pulse, servo_min_value, servo_max_value);
-		// TIM_SetCompare1(TIM1, servo_pulse);
-		// Set_Chassis_Motor_Speed(remoter->ch3 * 30, remoter->ch3 * 30);
-
 		rt_thread_delay(50);
 	}
 }
 
-static Pid_Position_t motor_left_speed_pid = NEW_POSITION_PID(11, 0, 4.5, 2000, 7000, 0, 1000, 500);
-static Pid_Position_t motor_right_speed_pid = NEW_POSITION_PID(11, 0, 4.5, 2000, 7000, 0, 1000, 500);
-
 void Set_Chassis_Motor_Speed(float left_motor_speed, float right_motor_speed)
 {
+	static Pid_Position_t motor_left_speed_pid = NEW_POSITION_PID(10, 0, 4.5, 2000, 7000, 0, 1000, 500);
+	static Pid_Position_t motor_right_speed_pid = NEW_POSITION_PID(10, 0, 4.5, 2000, 7000, 0, 1000, 500);
+
 	int16_t pid_left = Pid_Position_Calc(&motor_left_speed_pid, left_motor_speed, (float)GetMotorLeftSpeed());
 	int16_t pid_right = Pid_Position_Calc(&motor_right_speed_pid, right_motor_speed, (float)GetMotorRightSpeed());
 	SetMotorLeftPower(pid_left);
@@ -97,4 +74,37 @@ void Int16_Constrain(uint16_t *data, const uint16_t min_value, const uint16_t ma
 		*data = max_value;
 	else if (*data < min_value)
 		*data = min_value;
+}
+
+void Send_Chessis_Encoder2Ros(uint8_t *buffer, const uint8_t size)
+{
+	static const uint8_t encoder_hader_one = 0xFF;
+	static const uint8_t encoder_hader_two = 0xEE;
+	static const uint8_t encoder_tail = 0xDD;
+
+	int32_t right_encoder_changed_value = GetMotorRightSpeed();
+	int32_t left_encoder_changed_value = GetMotorLeftSpeed();
+
+	buffer[0] = encoder_hader_one;
+	buffer[1] = encoder_hader_two;
+
+	buffer[2] = left_encoder_changed_value >> 24;
+	buffer[3] = left_encoder_changed_value >> 16;
+	buffer[4] = left_encoder_changed_value >> 8;
+	buffer[5] = left_encoder_changed_value;
+
+	buffer[6] = right_encoder_changed_value >> 24;
+	buffer[7] = right_encoder_changed_value >> 16;
+	buffer[8] = right_encoder_changed_value >> 8;
+	buffer[9] = right_encoder_changed_value;
+
+	buffer[10] = encoder_tail;
+
+	Usart1_Dma_Send((uint32_t)encoder_send_buffer, size);
+}
+
+void Set_Racecar_Direction(uint16_t *pulse)
+{
+	TIM_SetCompare1(TIM1, *pulse);
+	Int16_Constrain(pulse, servo_limit_value_t.min_, servo_limit_value_t.max_);
 }
