@@ -69,8 +69,7 @@ static void Chassis_Thread(void *param)
 		// int32_t left = encoder_send_buffer[2] << 24 | encoder_send_buffer[3] << 16 | encoder_send_buffer[4] << 8 | encoder_send_buffer[5];
 		// int32_t right = encoder_send_buffer[6] << 24 | encoder_send_buffer[7] << 16 | encoder_send_buffer[8] << 8 | encoder_send_buffer[9];
 		// printf("%d %d \r\n", left, right);
-		uint8_t buffer[4] = {0xFF, 0xFF, 0xFF, 0xFF};
-		Usart1_Dma_Send((uint32_t)buffer, 4);
+		Usart1_Dma_Send((uint32_t)encoder_send_buffer, 11);
 
 		// servo_pulse = 1501 + (uint16_t)((remoter->ch0 + 128) * 3.90);
 		// Int16_Constrain(&servo_pulse, servo_min_value, servo_max_value);
