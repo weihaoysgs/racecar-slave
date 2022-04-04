@@ -64,8 +64,8 @@ static void Pstwo_Thread(void *param)
 #undef dr16_rbuff
 
                 // 调试时将下列2行“//”删除，即可打印出遥控器信息
-                printf("ch1:%d  ch2:%d  ch3:%d  ch4:%d  ", rc_data.ch1, rc_data.ch2, rc_data.ch3, rc_data.ch4);
-                printf("ch5:%d  ch6:%d  ch7:%d  ch8:%d  ch9:%d  ch10:%d\r\n", rc_data.ch5, rc_data.ch6, rc_data.ch7, rc_data.ch8, rc_data.ch9, rc_data.ch10);
+                // printf("ch1:%d  ch2:%d  ch3:%d  ch4:%d  ", rc_data.ch1, rc_data.ch2, rc_data.ch3, rc_data.ch4);
+                // printf("ch5:%d  ch6:%d  ch7:%d  ch8:%d  ch9:%d  ch10:%d\r\n", rc_data.ch5, rc_data.ch6, rc_data.ch7, rc_data.ch8, rc_data.ch9, rc_data.ch10);
             }
             else
             {

@@ -22,8 +22,7 @@ void Peripheral_Init(void)
     Led_Init();
     Uart4_Init();
     Uart5_Init();
-    // Usart1_Init();
-    Usart1_Init_Qingzhou();
+    Usart1_Init_Self();
 
     Time8_PWM_Init(7200, 0);
     Init_MPU9250();
