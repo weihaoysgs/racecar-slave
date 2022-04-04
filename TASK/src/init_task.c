@@ -7,6 +7,7 @@
 #include "mpu9250.h"
 #include "time1.h"
 #include "usart5.h"
+#include "usart1.h"
 
 /**
  * @brief �����ʼ��
@@ -21,6 +22,8 @@ void Peripheral_Init(void)
     Led_Init();
     Uart4_Init();
     Uart5_Init();
+    // Usart1_Init();
+    Usart1_Init_Qingzhou();
 
     Time8_PWM_Init(7200, 0);
     Init_MPU9250();

@@ -10,6 +10,9 @@
 #include "motor.h"
 #include "pid.h"
 #include "usart4.h"
+#include "motor_speed_timer.h"
+#include "usart4.h"
+#include "usart1.h"
 
 void Chassis_Thread_Init(void);
 rt_thread_t Get_Chassis_Thread_Object(void);
