@@ -24,19 +24,12 @@ void Time1_Pwm_Init(u16 arr, u16 psc)
     TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;              
     TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;  
     TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;  
-	TIM_OCInitStructure.TIM_Pulse = 2000;   
-    TIM_OC1Init(TIM1, &TIM_OCInitStructure); 
-
-    TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;              
-    TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;  
-    TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;  
-	TIM_OCInitStructure.TIM_Pulse = 2000;   
+	TIM_OCInitStructure.TIM_Pulse = 0;   
+    TIM_OC1Init(TIM1, &TIM_OCInitStructure);
     TIM_OC4Init(TIM1, &TIM_OCInitStructure);                      
 
-    TIM_OC1PreloadConfig(TIM1, TIM_OCPreload_Enable); 
-    TIM_OC4PreloadConfig(TIM1, TIM_OCPreload_Enable); 
+    // TIM_OC1PreloadConfig(TIM1, TIM_OCPreload_Enable); 
+    // TIM_OC4PreloadConfig(TIM1, TIM_OCPreload_Enable); 
     TIM_CtrlPWMOutputs(TIM1, ENABLE);
-    TIM_Cmd(TIM1, ENABLE);  
-
-    TIM_SetCompare4(TIM1,2000);
+    TIM_Cmd(TIM1, ENABLE);
 }

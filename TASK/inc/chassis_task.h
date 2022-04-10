@@ -21,7 +21,7 @@ typedef struct Servo_Construction_Value_t
     uint16_t max_;
 }Servo_Construction_Value_t;
 
-void Set_Racecar_Direction(uint16_t *servo_pulse);
+void Set_Racecar_Direction(uint16_t servo_pulse);
 void Chassis_Thread_Init(void);
 void Send_Chessis_Encoder2Ros(uint8_t *buffer,const uint8_t size);
 rt_thread_t Get_Chassis_Thread_Object(void);
