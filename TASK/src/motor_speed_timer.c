@@ -1,8 +1,11 @@
 #include "motor_speed_timer.h"
 #include "encoder.h"
 
-static int32_t motor_left_speed = 0;
-static int32_t motor_right_speed = 0;
+static volatile int32_t motor_left_speed = 0;
+static volatile int32_t motor_right_speed = 0;
+
+static volatile int32_t motor_left_total_count = 0;
+static volatile int32_t motor_right_total_count = 0;
 
 static struct rt_timer motor_speed_clc_timer;
 
@@ -24,7 +27,9 @@ void Motor_Speed_Clc_Timer_Init(void) {
 void motorSpeedClcTimerCallback(void* parameter)
 {
     motor_left_speed = GetTim2EncoderChangedValue();
+    motor_left_total_count = motor_left_total_count + motor_left_speed;
     motor_right_speed = GetTim3EncoderChangedValue();
+    motor_right_total_count = motor_right_total_count + motor_right_speed;
 }
 
 /**
@@ -45,4 +50,20 @@ int32_t GetMotorRightSpeed(void) {
     return motor_right_speed;
 }
 
+/**
+ * @brief Get the Motor Left cnt
+ * 
+ * @return int32_t 总脉冲
+ */
+int32_t GetMotorLeftCount(void) {
+    return motor_left_total_count;
+}
 
+/**
+ * @brief Get the Motor Right cnt
+ * 
+ * @return int32_t 总脉冲
+ */
+int32_t GetMotorRightCount(void) {
+    return motor_right_total_count;
+}

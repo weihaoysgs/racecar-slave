@@ -8,5 +8,7 @@ void Motor_Speed_Clc_Timer_Init(void);
 rt_timer_t Get_Motor_Speed_Clc_Timer_Object(void);
 int32_t GetMotorLeftSpeed(void);
 int32_t GetMotorRightSpeed(void);
+int32_t GetMotorLeftCount(void);
+int32_t GetMotorRightCount(void);
 
 #endif
