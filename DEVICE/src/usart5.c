@@ -1,5 +1,9 @@
 #include "usart5.h"
 
+static const uint32_t uart5_rx_max_len = 32;
+static volatile uint32_t uart5_rx_length = 0;
+static volatile uint8_t uart5_rx_buffer[uart5_rx_max_len] = {0};
+
 #if 1
 #pragma import(__use_no_semihosting)
 
@@ -60,8 +64,28 @@ void Uart5_Init(void)
 	NVIC_Init(&NVIC_InitStructure);
 
 	//! 串口4空闲中断（一帧数据接收完毕）
-	USART_ITConfig(UART5, USART_IT_TC, DISABLE);
+	USART_ITConfig(UART5, USART_IT_RXNE, DISABLE);
+	USART_ITConfig(UART5, USART_IT_IDLE, DISABLE);
 	USART_Cmd(UART5, ENABLE);
 	
 }
 
+void USART2_IRQHandler(void)
+{
+	if(USART_GetITStatus(UART5, USART_IT_RXNE))
+	{
+		uart5_rx_buffer[uart5_rx_length] = UART5->DR;
+		uart5_rx_length ++;
+		if(uart5_rx_length>31)
+		{
+			// 唤醒任务
+		}
+		USART_ClearITPendingBit(UART5, USART_IT_RXNE);
+	}
+	if(USART_GetITStatus(UART5, USART_IT_IDLE))
+	{
+		(void)UART5->SR;
+        (void)UART5->DR;
+		// 唤醒任务
+	}
+}
