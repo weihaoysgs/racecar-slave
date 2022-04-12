@@ -733,6 +733,11 @@
               <FileType>1</FileType>
               <FilePath>..\LIBS\src\pid.c</FilePath>
             </File>
+            <File>
+              <FileName>upload_message.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\LIBS\src\upload_message.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
