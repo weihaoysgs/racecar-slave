@@ -74,6 +74,10 @@ static void Pstwo_Thread(void *param)
 		}
 		else
 		{
+            rc_data.ch1 = 1000;
+            rc_data.ch2 = 1000;
+            rc_data.ch3 = 1000;
+            rc_data.ch4 = 1000;
 			//重置遥控器数据
             Uart4_DMA_Reset();
 		}
