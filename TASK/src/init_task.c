@@ -10,26 +10,32 @@
 #include "usart1.h"
 
 /**
- * @brief ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½
+ * @brief ËùÓÐÍâÉè³õÊ¼»¯
  *
  */
 void Peripheral_Init(void)
 {
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE); // ï¿½ï¿½ÒªÊ¹ï¿½ï¿½AFIOÊ±ï¿½ï¿½
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
     GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);
 
     Led_Init();
-    Uart4_Init();
     Uart5_Init();
+    Uart4_Init();
+    
+    // ros´®¿Ú
     Usart1_Init_Self();
 
-    Time8_PWM_Init(7200, 0);
+    //ÍÓÂÝÒÇ
     Init_MPU9250();
 
+    //µç»ú
+    Time8_PWM_Init(7200, 0);
+
+    // µç»ú±àÂëÆ÷
     Encoder_Init_TIM2();
     Encoder_Init_TIM3();
 
-    // 800 - 2200
+    // ¶æ»ú 800 - 2200
     Time1_Pwm_Init(4000, 71);
 }
