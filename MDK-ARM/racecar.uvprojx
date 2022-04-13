@@ -749,9 +749,9 @@
               <FilePath>..\TASK\src\init_task.c</FilePath>
             </File>
             <File>
-              <FileName>chassis_task.c</FileName>
+              <FileName>ahrs_task.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\TASK\src\chassis_task.c</FilePath>
+              <FilePath>..\TASK\src\ahrs_task.c</FilePath>
             </File>
             <File>
               <FileName>pstwo_task.c</FileName>
@@ -764,9 +764,14 @@
               <FilePath>..\TASK\src\motor_speed_timer.c</FilePath>
             </File>
             <File>
-              <FileName>ahrs_task.c</FileName>
+              <FileName>chassis_task.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\TASK\src\ahrs_task.c</FilePath>
+              <FilePath>..\TASK\src\chassis_task.c</FilePath>
+            </File>
+            <File>
+              <FileName>upload_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\TASK\src\upload_task.c</FilePath>
             </File>
             <File>
               <FileName>shell_task.c</FileName>

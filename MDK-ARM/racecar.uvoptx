@@ -1085,8 +1085,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\TASK\src\chassis_task.c</PathWithFileName>
-      <FilenameWithoutPath>chassis_task.c</FilenameWithoutPath>
+      <PathWithFileName>..\TASK\src\ahrs_task.c</PathWithFileName>
+      <FilenameWithoutPath>ahrs_task.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -1121,14 +1121,26 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\TASK\src\ahrs_task.c</PathWithFileName>
-      <FilenameWithoutPath>ahrs_task.c</FilenameWithoutPath>
+      <PathWithFileName>..\TASK\src\chassis_task.c</PathWithFileName>
+      <FilenameWithoutPath>chassis_task.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
     <File>
       <GroupNumber>9</GroupNumber>
       <FileNumber>70</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\TASK\src\upload_task.c</PathWithFileName>
+      <FilenameWithoutPath>upload_task.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>9</GroupNumber>
+      <FileNumber>71</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
