@@ -769,6 +769,11 @@
               <FilePath>..\TASK\src\chassis_task.c</FilePath>
             </File>
             <File>
+              <FileName>rosmsg_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\TASK\src\rosmsg_task.c</FilePath>
+            </File>
+            <File>
               <FileName>upload_task.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\TASK\src\upload_task.c</FilePath>
