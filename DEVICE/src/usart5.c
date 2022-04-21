@@ -1,4 +1,5 @@
 #include "usart5.h"
+#include "shell_task.h"
 
 static const uint32_t uart5_rx_max_len = 32;
 static volatile uint32_t uart5_rx_length = 0;
@@ -44,8 +45,8 @@ void Uart5_Init(void)
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
 
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOD, &GPIO_InitStructure);
 
@@ -63,29 +64,61 @@ void Uart5_Init(void)
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
 
-	//! 串口4空闲中断（一帧数据接收完毕）
 	USART_ITConfig(UART5, USART_IT_RXNE, DISABLE);
-	USART_ITConfig(UART5, USART_IT_IDLE, DISABLE);
+	USART_ITConfig(UART5, USART_IT_IDLE, DISABLE); //! 串口5空闲中断（一帧数据接收完毕）
 	USART_Cmd(UART5, ENABLE);
-	
 }
 
-void USART2_IRQHandler(void)
+void UART5_IRQHandler(void)
 {
 	if(USART_GetITStatus(UART5, USART_IT_RXNE))
 	{
 		uart5_rx_buffer[uart5_rx_length] = UART5->DR;
 		uart5_rx_length ++;
+		USART_GetITStatus(UART5, USART_IT_RXNE);
 		if(uart5_rx_length>31)
 		{
-			// 唤醒任务
+			// rt_sem_release(&shell_rx_semaphore); // 唤醒任务
+			printf("len %d\r\n", uart5_rx_length);
+			uart5_rx_length = 0;
 		}
-		USART_ClearITPendingBit(UART5, USART_IT_RXNE);
 	}
 	if(USART_GetITStatus(UART5, USART_IT_IDLE))
 	{
 		(void)UART5->SR;
         (void)UART5->DR;
-		// 唤醒任务
+		// rt_sem_release(&shell_rx_semaphore); // 唤醒任务
+		printf("len %d\r\n", uart5_rx_length);
+		uart5_rx_length = 0;
 	}
+}
+
+/**
+ * @brief 获取当前接收长度
+ * 
+ * @return uint32_t 
+ */
+uint32_t* Get_Uart5_Rx_Length(void)
+{
+	return (uint32_t *)&uart5_rx_max_len;
+}
+
+/**
+ * @brief 获取串口5DMA接受Buffer
+ * 
+ * @return uint8_t* 数组头指针
+ */
+uint8_t *Get_Uart5_Rx_Buffer(void)
+{
+	return (uint8_t *)uart5_rx_buffer;
+}
+
+/**
+ * @brief 串口5接收DMA最大长度
+ * 
+ * @return const uint16_t 
+ */
+uint32_t Get_Uart5_Rx_Max_Len(void)
+{
+	return uart5_rx_max_len;
 }

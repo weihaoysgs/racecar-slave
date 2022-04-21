@@ -7,6 +7,7 @@
 #include "string.h"
 #include "usart5.h"
 
+extern struct rt_semaphore shell_rx_semaphore;
 void Shell_Thread_Init(void);
 rt_thread_t Get_Shell_Thread_Object(void);
 
