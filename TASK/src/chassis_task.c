@@ -60,14 +60,14 @@ static void Chassis_Thread(void *param)
 		static int16_t true_lll = 0;
 		static int16_t true_rrr = 0;
 		if(true_lll>lll)
-			true_lll-=30;
+			true_lll-=50;
 		else
-			true_lll+=30;
+			true_lll+=50;
 		
 		if(true_rrr>rrr)
-			true_rrr-=30;
+			true_rrr-=50;
 		else
-			true_rrr+=30;
+			true_rrr+=50;
 		Int16_Constrain(&true_lll, -7199, 7199);
 		Int16_Constrain(&true_rrr, -7199, 7199);
 		SetMotorLeftPower(true_lll);

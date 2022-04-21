@@ -4,6 +4,7 @@
 #include "pstwo_task.h"
 #include "motor_speed_timer.h"
 #include "ahrs_task.h"
+#include "rosmsg_task.h"
 #include "upload_task.h"
 #include "shell_task.h"
 
@@ -18,6 +19,7 @@ int main(void)
 	Pstwo_Thread_Init();
 	Chassis_Thread_Init();
 	Ahrs_Thread_Init();
+	Rosmsg_Thread_Init();
 	Upload_Thread_Init();
 	Shell_Thread_Init();
 
@@ -25,6 +27,7 @@ int main(void)
 	rt_thread_startup(Get_Chassis_Thread_Object());
 	rt_thread_startup(Get_Pstwo_Thread_Object());
 	rt_thread_startup(Get_Ahrs_Thread_Object());
+	rt_thread_startup(Get_Rosmsg_Thread_Object());
 	rt_thread_startup(Get_Upload_Thread_Object());
 	rt_thread_startup(Get_Shell_Thread_Object());
 	// END 初始化并启动任务 END

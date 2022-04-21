@@ -1,4 +1,5 @@
 #include "usart1.h"
+#include "rosmsg_task.h"
 
 static const uint8_t usart1_dma_rx_max_len = 30;
 static uint8_t usart1_dma_rx_buffer[usart1_dma_rx_max_len];
@@ -225,21 +226,21 @@ void Usart1_Init_Self(void)
     DMA_Cmd(DMA1_Channel5, ENABLE);  
     USART_DMACmd(USART1, USART_DMAReq_Rx, ENABLE);     
     // DMA_ITConfig(DMA1_Channel5, DMA_IT_TC, ENABLE); 
-    USART_ITConfig(USART1,USART_IT_IDLE,ENABLE);
+    USART_ITConfig(USART1,USART_IT_IDLE, DISABLE);
 }
 
 void USART1_IRQHandler()
 {
-    if (USART_GetITStatus(USART1,USART_IT_IDLE))
+    if (USART_GetITStatus(USART1, USART_IT_IDLE))
     {
         DMA_Cmd(DMA1_Channel5, DISABLE);
-
         (void)USART1->SR;
         (void)USART1->DR;
 
         usart1_dma_rxd_len = usart1_dma_rx_max_len - DMA_GetCurrDataCounter(DMA1_Channel5);
         DMA_SetCurrDataCounter(DMA1_Channel5, usart1_dma_rx_max_len);
-
         DMA_Cmd(DMA1_Channel5, ENABLE);
+
+        rt_sem_release(&rosmsg_get_semaphore);
     }
 }
