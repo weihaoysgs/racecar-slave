@@ -45,38 +45,58 @@ static void Chassis_Thread(void *param)
 
 	for (;;)
 	{
-		// Send_Chessis_Encoder2Ros(encoder_send_buffer, send_buffer_size);
-		// printf("ch1:%d  ch2:%d  ch3:%d  ch4:%d  \r\n", rc_data_pt->ch1, rc_data_pt->ch2, rc_data_pt->ch3-1000, rc_data_pt->ch4);
-
-		// servo_pulse = rc_data_pt->ch2 -400;
 		servo_pulse = (int16_t)servo_limit_value_t.middle - (int16_t)(Joystick_Raw_To_Normal_Data(rc_data_pt->ch1)/1.8f);
-		// servo_pulse += servo_limit_value_t.middle;
 		Set_Racecar_Direction(servo_pulse);
-		printf("servo_value : %d rc: %d  \r\n",servo_pulse, Joystick_Raw_To_Normal_Data(rc_data_pt->ch1));
-		// Set_Chassis_Motor_Speed((float)Joystick_Raw_To_Normal_Data(rc_data_pt->ch3)/3,
-		// 						(float)Joystick_Raw_To_Normal_Data(rc_data_pt->ch3)/3);
-		// SetMotorLeftPower(Output_Smoothing(Joystick_Raw_To_Normal_Data(rc_data_pt->ch3)*10));
-		// SetMotorLeftPower(Joystick_Raw_To_Normal_Data(rc_data_pt->ch3)*10);
-		// printf("%d,%d\r\n", GetMotorRightSpeed(), GetMotorLeftSpeed());
-		Set_Chassis_Motor_Speed(Joystick_Raw_To_Normal_Data(rc_data_pt->ch3) / 2,
-								Joystick_Raw_To_Normal_Data(rc_data_pt->ch3) / 2);
-		// printf("%d,%d\r\n", Joystick_Raw_To_Normal_Data(rc_data_pt->ch3)*10, GetMotorRightSpeed());
+
+		// 通过PID控制电机速度
+		// Set_Chassis_Motor_Speed(Joystick_Raw_To_Normal_Data(rc_data_pt->ch3) / 2,
+		// 						Joystick_Raw_To_Normal_Data(rc_data_pt->ch3) / 2);
+		
+		int16_t lll = -Joystick_Raw_To_Normal_Data(rc_data_pt->ch3) * 10.0f;
+		int16_t rrr = Joystick_Raw_To_Normal_Data(rc_data_pt->ch3) * 10.0f;
+		Int16_Constrain(&lll, -7199, 7199);
+		Int16_Constrain(&rrr, -7199, 7199);
+
+		static int16_t true_lll = 0;
+		static int16_t true_rrr = 0;
+		if(true_lll>lll)
+			true_lll-=30;
+		else
+			true_lll+=30;
+		
+		if(true_rrr>rrr)
+			true_rrr-=30;
+		else
+			true_rrr+=30;
+		Int16_Constrain(&true_lll, -7199, 7199);
+		Int16_Constrain(&true_rrr, -7199, 7199);
+		SetMotorLeftPower(true_lll);
+		SetMotorRightPower(true_rrr);
+
 		LED_TOGGLE();
-		rt_thread_delay(20);
+		rt_thread_delay(2);
 	}
 }
 
 void Set_Chassis_Motor_Speed(float left_motor_speed, float right_motor_speed)
 {
-	static Pid_Position_t motor_left_speed_pid = NEW_POSITION_PID(15, 0, 0, 200, 7199, 0, 1000, 500);
-	static Pid_Position_t motor_right_speed_pid = NEW_POSITION_PID(15, 6, 2, 200, 7199, 0, 1000, 500);
+	static Pid_Position_t motor_left_speed_pid = NEW_POSITION_PID(22, 0, 0, 200, 7199, 0, 1000, 500);
+	static Pid_Position_t motor_right_speed_pid = NEW_POSITION_PID(22, 0, 0, 200, 7199, 0, 1000, 500);
 	int16_t pid_left = Pid_Position_Calc(&motor_left_speed_pid, -left_motor_speed, (float)GetMotorLeftSpeed());
 	int16_t pid_right = Pid_Position_Calc(&motor_right_speed_pid, right_motor_speed, (float)GetMotorRightSpeed());
 	SetMotorLeftPower(pid_left);
 	SetMotorRightPower(pid_right);
 }
 
-void Int16_Constrain(uint16_t *data, const uint16_t min_value, const uint16_t max_value)
+void Uint16_Constrain(uint16_t *data, const uint16_t min_value, const uint16_t max_value)
+{
+	if (*data > max_value)
+		*data = max_value;
+	else if (*data < min_value)
+		*data = min_value;
+}
+
+void Int16_Constrain(int16_t *data, const int16_t min_value, const int16_t max_value)
 {
 	if (*data > max_value)
 		*data = max_value;
@@ -114,7 +134,7 @@ void Send_Chessis_Encoder2Ros(uint8_t *buffer, const uint8_t size)
 void Set_Racecar_Direction(uint16_t pulse)
 {
 	uint16_t pulse__ = pulse;
-	Int16_Constrain(&pulse__, servo_limit_value_t.min_, servo_limit_value_t.max_);
+	Uint16_Constrain(&pulse__, servo_limit_value_t.min_, servo_limit_value_t.max_);
 	TIM1->CCR1 = pulse__;
 	TIM1->CCR4 = pulse__;
 }

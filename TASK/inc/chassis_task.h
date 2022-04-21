@@ -13,6 +13,7 @@
 #include "motor_speed_timer.h"
 #include "usart4.h"
 #include "usart1.h"
+#include "upload_message.h"
 
 typedef struct Servo_Construction_Value_t
 {
@@ -26,6 +27,7 @@ void Chassis_Thread_Init(void);
 void Send_Chessis_Encoder2Ros(uint8_t *buffer,const uint8_t size);
 rt_thread_t Get_Chassis_Thread_Object(void);
 void Set_Chassis_Motor_Speed(float left_motor_speed, float right_motor_speed);
-void Int16_Constrain(uint16_t *data, const uint16_t min_value, const uint16_t max_value);
+void Int16_Constrain(int16_t *data, const int16_t min_value, const int16_t max_value);
+void Uint16_Constrain(uint16_t *data, const uint16_t min_value, const uint16_t max_value);
 
 #endif // __CHASSIS_TASK_H_
