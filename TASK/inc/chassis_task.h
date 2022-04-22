@@ -7,6 +7,7 @@
 #include "usart4.h"
 #include "led.h"
 #include "pstwo_task.h"
+#include "rosmsg_task.h"
 #include "motor.h"
 #include "pid.h"
 #include "usart4.h"
