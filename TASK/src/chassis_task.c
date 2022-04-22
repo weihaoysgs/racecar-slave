@@ -30,9 +30,9 @@ static const Ros_message_t* ros_msg;
 // 左小右大
 static const Servo_Construction_Value_t servo_limit_value_t =
 {
-	.max_ = 1793,
+	.max_ = 1793, //最左转
 	.middle = 1460, //1000
-	.min_ = 1110
+	.min_ = 1110 //最右转
 };
 
 static void Chassis_Thread(void *param)
@@ -45,20 +45,52 @@ static void Chassis_Thread(void *param)
 
 	for (;;)
 	{
-		// ROS 上位机控制
-		if(Get_Ros_Message_Status())
-		{
-			servo_pulse = (int16_t)servo_limit_value_t.middle + (int16_t)(ros_msg->data.angle * 8);
-			true_motors_speed_target[0] = ros_msg->data.speed * 300;
-			true_motors_speed_target[1] = ros_msg->data.speed * 300;
-		}
 
 		// 遥控器输入
-		else if(Rc_Valid_Status())
+		if(Rc_Valid_Status())
 		{
 			servo_pulse = (int16_t)servo_limit_value_t.middle - (int16_t)(Joystick_Raw_To_Normal_Data(rc_data_pt->ch1)/1.8f);
 			true_motors_speed_target[0] = Joystick_Raw_To_Normal_Data(rc_data_pt->ch3) / 2.0f;
 			true_motors_speed_target[1] = Joystick_Raw_To_Normal_Data(rc_data_pt->ch3) / 2.0f;
+		}
+
+		// ROS 上位机控制
+		else if(Get_Ros_Message_Status())
+		{
+			servo_pulse = (int16_t)servo_limit_value_t.middle 
+							+ ( (ros_msg->data.angle > 0) \
+							? (ros_msg->data.angle * (servo_limit_value_t.max_ - servo_limit_value_t.middle) / 45.0f) \
+							: (ros_msg->data.angle * (servo_limit_value_t.middle - servo_limit_value_t.min_) / 45.0f) );
+			
+			// 2040 脉冲 / 圈
+			// 0.375m / 圈
+			// (0.375 / 2040) m/脉冲
+			// (2040/ 0.375) 脉冲/米 x1
+			// ros_msg->data.speed(m/s)
+			// ros_msg->data.speed * x1 = (脉冲/s) x2
+			// x2 * 70ms / 1000ms = 输出的速度
+			true_motors_speed_target[0] = ros_msg->data.speed * (2040 / 0.375) * 70.0f / 1000.0f;
+			true_motors_speed_target[1] = ros_msg->data.speed * (2040 / 0.375) * 70.0f / 1000.0f;
+
+			// 左右轮差速
+			#define Differential_Parameters 0.54321f
+			if(ros_msg->data.angle>0) ///< 左转，左轮速度减小
+			{
+				if(true_motors_speed_target[0] > 0)
+				{
+					true_motors_speed_target[0] = true_motors_speed_target[0] 
+													* (1 - Differential_Parameters * (ros_msg->data.angle / 45.0f));
+				}
+			}
+			else ///< 右转，右轮速度减小
+			{
+				if(true_motors_speed_target[1] > 0)
+				{
+					true_motors_speed_target[1] = true_motors_speed_target[1] 
+													* (1 + Differential_Parameters * (ros_msg->data.angle / 45.0f));
+				}
+			}
+			#undef Differential_Parameters
 		}
 
 		// 无控制信号输入
