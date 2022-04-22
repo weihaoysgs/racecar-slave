@@ -40,7 +40,7 @@ static void Rosmsg_Thread(void *param)
 
     for (;;)
     {
-        if(RT_EOK == rt_sem_take(&rosmsg_get_semaphore, 200))
+        if(RT_EOK == rt_sem_take(&rosmsg_get_semaphore, 500))
 		{
             if(*Get_Usart1_Rxd_Len() == 12)
             {
