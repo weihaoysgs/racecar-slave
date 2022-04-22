@@ -45,6 +45,8 @@ static void Chassis_Thread(void *param)
 
 	for (;;)
 	{
+		if(Rc_Valid_Status())
+		{
 		servo_pulse = (int16_t)servo_limit_value_t.middle - (int16_t)(Joystick_Raw_To_Normal_Data(rc_data_pt->ch1)/1.8f);
 		Set_Racecar_Direction(servo_pulse);
 
@@ -73,8 +75,9 @@ static void Chassis_Thread(void *param)
 		SetMotorLeftPower(true_lll);
 		SetMotorRightPower(true_rrr);
 
-		LED_TOGGLE();
-		rt_thread_delay(2);
+		}
+		
+		rt_thread_delay(20);
 	}
 }
 

@@ -29,6 +29,7 @@ rt_thread_t Get_Pstwo_Thread_Object(void)
 struct rt_semaphore remoter_get_semaphore; //遥控器收到一帧数据信号量
 static uint8_t *uart4_rx_buffer;
 static Rc_Data_t rc_data;
+static uint8_t rx_connected_status = 0;
 
 static uint8_t Check_Rc_Data_Available(uint8_t* raw_buf);
 
@@ -66,6 +67,7 @@ static void Pstwo_Thread(void *param)
                 // 调试时将下列2行“//”删除，即可打印出遥控器信息
                 // printf("ch1:%d  ch2:%d  ch3:%d  ch4:%d  ", rc_data.ch1, rc_data.ch2, rc_data.ch3, rc_data.ch4);
                 // printf("ch5:%d  ch6:%d  ch7:%d  ch8:%d  ch9:%d  ch10:%d\r\n", rc_data.ch5, rc_data.ch6, rc_data.ch7, rc_data.ch8, rc_data.ch9, rc_data.ch10);
+                rx_connected_status = 1;
             }
             else
             {
@@ -78,6 +80,7 @@ static void Pstwo_Thread(void *param)
             rc_data.ch2 = 1000;
             rc_data.ch3 = 1000;
             rc_data.ch4 = 1000;
+            rx_connected_status = 0;
 			//重置遥控器数据
             Uart4_DMA_Reset();
 		}
@@ -138,4 +141,18 @@ int16_t Joystick_Raw_To_Normal_Data(uint16_t data)
 static uint8_t Check_Rc_Data_Available(uint8_t* raw_buf)
 {
     return ((raw_buf[0] == 0x0F) && (raw_buf[24] == 0x00));
+}
+
+uint8_t Rc_Rx_Connected_Status(void)
+{
+    return rx_connected_status;
+}
+
+uint8_t Rc_Valid_Status(void)
+{
+    if(rx_connected_status == 1 && rc_data.ch7 < 500 && rc_data.ch8 < 500)
+    {
+        return 1u;
+    }
+    return 0u;
 }

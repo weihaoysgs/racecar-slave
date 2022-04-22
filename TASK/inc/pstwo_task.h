@@ -26,5 +26,6 @@ void Pstwo_Thread_Init(void);
 rt_thread_t Get_Pstwo_Thread_Object(void);
 const Rc_Data_t* Get_Rc_Data(void);
 int16_t Joystick_Raw_To_Normal_Data(uint16_t data);
+uint8_t Rc_Valid_Status(void);
 
 #endif //_PSTWO_TASK_H_
