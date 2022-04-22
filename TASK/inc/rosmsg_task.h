@@ -32,5 +32,7 @@ extern struct rt_semaphore rosmsg_get_semaphore; //收到一帧ROS数据信号�
 
 void Rosmsg_Thread_Init(void);
 rt_thread_t Get_Rosmsg_Thread_Object(void);
+const Ros_message_t* Get_Ros_Message(void);
+uint8_t Get_Ros_Message_Status(void);
 
 #endif // __ROSMSG_TASK_H_

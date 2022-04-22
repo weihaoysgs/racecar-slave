@@ -25,6 +25,7 @@ rt_thread_t Get_Rosmsg_Thread_Object(void)
 }
 /* relate to thread END */
 
+static uint8_t ros_message_status = 0;
 struct rt_semaphore rosmsg_get_semaphore; //收到一帧ROS数据信号量
 static Ros_message_t ros_message;
 
@@ -35,16 +36,12 @@ static void Rosmsg_Thread(void *param)
                 0,
                 RT_IPC_FLAG_PRIO);
     rt_thread_delay(1000);
-    USART_ITConfig(USART1,USART_IT_IDLE, ENABLE);
+    USART_ITConfig(USART1, USART_IT_IDLE, ENABLE);
 
     for (;;)
     {
         if(RT_EOK == rt_sem_take(&rosmsg_get_semaphore, 200))
 		{
-            // printf("Len%d\t", *Get_Usart1_Rxd_Len());
-            // for(int i=0; i<*Get_Usart1_Rxd_Len(); i++)
-            //     printf("%x ", Get_Usart1_Rxd_Buffer()[i]);
-            // printf("\r\n");
             if(*Get_Usart1_Rxd_Len() == 12)
             {
                 // 帧头、id检测
@@ -57,12 +54,11 @@ static void Rosmsg_Thread(void *param)
                     }
                 }
             }
-
-            printf("aa %.2f %.2f\r\n", ros_message.data.speed, ros_message.data.angle);
+            ros_message_status = 1;
         }
         else
         {
-            ;
+            ros_message_status = 0;
         }
     }
 }
@@ -70,4 +66,9 @@ static void Rosmsg_Thread(void *param)
 const Ros_message_t* Get_Ros_Message(void)
 {
     return &ros_message;
+}
+
+uint8_t Get_Ros_Message_Status(void)
+{
+    return ros_message_status;
 }
