@@ -150,7 +150,7 @@ uint8_t Rc_Rx_Connected_Status(void)
 
 uint8_t Rc_Valid_Status(void)
 {
-    if(rx_connected_status == 1 && rc_data.ch7 < 500 && rc_data.ch8 < 500)
+    if(rx_connected_status == 1 && (rc_data.ch7 < 500 && rc_data.ch8 < 500))
     {
         return 1u;
     }
