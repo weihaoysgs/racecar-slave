@@ -30,9 +30,9 @@ static const Ros_message_t* ros_msg;
 // 左小右大
 static const Servo_Construction_Value_t servo_limit_value_t =
 {
-	.max_ = 1793, //最左转
+	.max_ = 1893, //最左转
 	.middle = 1460, //1000
-	.min_ = 1110 //最右转
+	.min_ = 900 //最右转
 };
 
 static void Chassis_Thread(void *param)
@@ -45,7 +45,6 @@ static void Chassis_Thread(void *param)
 
 	for (;;)
 	{
-
 		// 遥控器输入
 		if(Rc_Valid_Status())
 		{
@@ -59,8 +58,8 @@ static void Chassis_Thread(void *param)
 		{
 			servo_pulse = (int16_t)servo_limit_value_t.middle 
 							+ ( (ros_msg->data.angle > 0) \
-							? (ros_msg->data.angle * (servo_limit_value_t.max_ - servo_limit_value_t.middle) / 45.0f) \
-							: (ros_msg->data.angle * (servo_limit_value_t.middle - servo_limit_value_t.min_) / 45.0f) );
+							? (ros_msg->data.angle * (servo_limit_value_t.max_ - servo_limit_value_t.middle) / 90.0f) \
+							: (ros_msg->data.angle * (servo_limit_value_t.middle - servo_limit_value_t.min_) / 90.0f) );
 			
 			// 2040 脉冲 / 圈
 			// 0.375m / 圈
@@ -73,7 +72,7 @@ static void Chassis_Thread(void *param)
 			true_motors_speed_target[1] = ros_msg->data.speed * (2040 / 0.375) * 70.0f / 1000.0f;
 
 			// 左右轮差速
-			#define Differential_Parameters 0.54321f
+			#define Differential_Parameters 0.34321f
 			if(ros_msg->data.angle>0) ///< 左转，左轮速度减小
 			{
 				if(true_motors_speed_target[0] > 0)
