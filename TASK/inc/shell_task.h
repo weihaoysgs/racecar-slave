@@ -5,6 +5,7 @@
 #include "rthw.h"
 #include "rtthread.h"
 #include "string.h"
+#include "shell.h"
 #include "usart5.h"
 
 extern struct rt_semaphore shell_rx_semaphore;

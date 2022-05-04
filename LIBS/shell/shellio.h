@@ -30,8 +30,7 @@
 #endif
 //------------------------------------------------------------------
 
-#include "usart1.h"
-#include "math2.h"
+#include "usart5.h"
 #define shell_print printf
 
 unsigned char Str_Compare(char * str1, char * str2, unsigned short int len);

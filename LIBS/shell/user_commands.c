@@ -5,16 +5,11 @@ extern Shell_command_t shell_cmd_root;
 
 //用户头文件包含
 #include "rtt_cmd.h"
-#include "math2.h"
-#include "detect_task.h"
-#include "gyroscope_task.h"
 
 //变量定义
 
 //函数声明
-static void Module_Online_Status(char * arg);
 static void Gyroscope_Data(char * arg);
-static void Gyro_Reset(char * arg);
 static void Pid_Show(char * arg);
 static void Pid_Set(char * arg);
 static void Pid2_Show(char * arg);
@@ -31,9 +26,7 @@ void User_Commands_Init(void)
     Rtt_Cmd_Init();
 
 	//用户命令注册
-	Shell_Register_Command("module-status" , Module_Online_Status);
 	Shell_Register_Command("gyroscope-data" , Gyroscope_Data);
-	Shell_Register_Command("gyro-reset" , Gyro_Reset);
 	Shell_Register_Command("pid-show" , Pid_Show);
 	Shell_Register_Command("pid-set" , Pid_Set);
 	Shell_Register_Command("pid2-show" , Pid2_Show);
@@ -42,55 +35,17 @@ void User_Commands_Init(void)
 	Shell_Register_Command("pid3-set" , Pid3_Set);
 }
 
-#define ONLINE_STATUS_PRINT(module) //{ if(Get_Module_Online_State(module)){shell_print("ON-line\r\n");}else{shell_print("OFF-line\r\n");} }
-static void Module_Online_Status(char * arg)
-{
-	shell_print("Module----------\r\n");
-
-	shell_print("remote control:\t");
-	ONLINE_STATUS_PRINT(0);
-
-	shell_print("chassis motor:\t");
-	ONLINE_STATUS_PRINT(1);
-
-	shell_print("gimbal motor:\t");
-	ONLINE_STATUS_PRINT(2);
-
-	shell_print("shooter motor:\t");
-	ONLINE_STATUS_PRINT(3);
-
-	shell_print("auto aim:\t");
-	ONLINE_STATUS_PRINT(4);
-
-	shell_print("judge system:\t");
-	ONLINE_STATUS_PRINT(5);
-
-	shell_print("super cap:\t");
-	ONLINE_STATUS_PRINT(6);
-
-	shell_print("gyroscope:\t");
-	ONLINE_STATUS_PRINT(7);
-
-	shell_print("----------------\r\n");
-}
-
 static void Gyroscope_Data(char * arg)
 {
-	if(1)
+	if(0)
 	{
-		shell_print("roll:%.2f, pitch:%.2f, yaw:%.2f", Get_Gyro_Data()->angle.roll_x, Get_Gyro_Data()->angle.pitch_y, Get_Gyro_Data()->angle.yaw_z);
+		// shell_print("roll:%.2f, pitch:%.2f, yaw:%.2f", Get_Gyro_Data()->angle.roll_x, Get_Gyro_Data()->angle.pitch_y, Get_Gyro_Data()->angle.yaw_z);
 	}
 	else
 	{
 		shell_print("Gyroscope offline!");
 	}
 	shell_print("\r\n");
-}
-
-static void Gyro_Reset(char * arg)
-{
-	Create_Gyro_Calibration_Thread();
-	shell_print("Try create Gyro Calibration Thread...\r\n");
 }
 
 float easy_pid_p, easy_pid_i, easy_pid_d;

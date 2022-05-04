@@ -102,7 +102,7 @@ void Shell_Command_Parse(char * arg)
 		{
 			if ((arg[node_id.part.len] == '\0') || (arg[node_id.part.len] == ' '))
 			{
-				shell_print("infantry> %s\r\n", arg);
+				shell_print("RaceCar> %s\r\n", arg);
 				node->func(arg); //执行回调函数
 				shell_print("\r\n");
 				return;
@@ -148,7 +148,6 @@ int Shell_Split_String(char * str ,char ** argv ,int maxread)
   * @param    arg  : 命令行内存
   * @return   无
 */
-#include "rov.h"
 #ifndef VERSION
 	#define VERSION "-"
 #endif
