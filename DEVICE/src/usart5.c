@@ -78,18 +78,16 @@ void UART5_IRQHandler(void)
 		USART_GetITStatus(UART5, USART_IT_RXNE);
 		if(uart5_rx_length>31)
 		{
-			// rt_sem_release(&shell_rx_semaphore); // 唤醒任务
-			printf("len %d\r\n", uart5_rx_length);
-			uart5_rx_length = 0;
+			rt_sem_release(&shell_rx_semaphore); // 唤醒任务
+			// uart5_rx_length = 0;
 		}
 	}
 	if(USART_GetITStatus(UART5, USART_IT_IDLE))
 	{
 		(void)UART5->SR;
         (void)UART5->DR;
-		// rt_sem_release(&shell_rx_semaphore); // 唤醒任务
-		printf("len %d\r\n", uart5_rx_length);
-		uart5_rx_length = 0;
+		rt_sem_release(&shell_rx_semaphore); // 唤醒任务
+		// uart5_rx_length = 0;
 	}
 }
 
@@ -100,7 +98,7 @@ void UART5_IRQHandler(void)
  */
 uint32_t* Get_Uart5_Rx_Length(void)
 {
-	return (uint32_t *)&uart5_rx_max_len;
+	return (uint32_t *)&uart5_rx_length;
 }
 
 /**
