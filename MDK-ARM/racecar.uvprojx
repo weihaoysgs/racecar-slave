@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F10X_HD,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\CMSIS;..\FWLIB\inc;..\RT-Thread\bsp;..\RT-Thread\include;..\RT-Thread\include\libc;..\USER;..\DEVICE\inc;..\HARDWARE\inc;..\LIBS\inc;..\TASK\inc</IncludePath>
+              <IncludePath>..\CMSIS;..\FWLIB\inc;..\RT-Thread\bsp;..\RT-Thread\include;..\RT-Thread\include\libc;..\USER;..\DEVICE\inc;..\HARDWARE\inc;..\LIBS\inc;..\LIBS\shell;..\TASK\inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -737,6 +737,31 @@
               <FileName>upload_message.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\LIBS\src\upload_message.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>LIBS/SHELL</GroupName>
+          <Files>
+            <File>
+              <FileName>rtt_cmd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\LIBS\shell\rtt_cmd.c</FilePath>
+            </File>
+            <File>
+              <FileName>shell.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\LIBS\shell\shell.c</FilePath>
+            </File>
+            <File>
+              <FileName>shellio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\LIBS\shell\shellio.c</FilePath>
+            </File>
+            <File>
+              <FileName>user_commands.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\LIBS\shell\user_commands.c</FilePath>
             </File>
           </Files>
         </Group>
