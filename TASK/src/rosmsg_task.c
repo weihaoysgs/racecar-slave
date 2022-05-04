@@ -15,7 +15,7 @@ void Rosmsg_Thread_Init(void)
                    RT_NULL,
                    &rosmsg_thread_stack[0],
                    sizeof(rosmsg_thread_stack),
-                   3,
+                   4,
                    20);
 }
 

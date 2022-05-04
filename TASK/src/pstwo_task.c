@@ -16,7 +16,7 @@ void Pstwo_Thread_Init(void)
                    RT_NULL,
                    &pstwo_thread_stack[0],
                    sizeof(pstwo_thread_stack),
-                   3,
+                   5,
                    20);
 }
 

@@ -14,7 +14,7 @@ void Shell_Thread_Init(void)
                    RT_NULL,
                    &shell_thread_stack[0],
                    sizeof(shell_thread_stack),
-                   3,
+                   6,
                    20);
 }
 
