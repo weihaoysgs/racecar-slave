@@ -24,6 +24,8 @@ rt_thread_t Get_Ahrs_Thread_Object(void)
 }
 /* relate to thread END */
 
+extern Mpu_Data_t raw_data;
+
 static void Ahrs_Thread(void *param)
 {
 	for (;;)

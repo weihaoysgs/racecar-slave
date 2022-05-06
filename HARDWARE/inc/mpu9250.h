@@ -71,8 +71,6 @@ typedef __packed struct
 	int16_t gz_offset;
 } Mpu_Data_t;
 
-extern Mpu_Data_t raw_data;
-
 void MPU_Write_Byte(uint8_t slave_add,uint8_t reg,uint8_t data); 
 uint8_t MPU_Read_Byte(uint8_t slave_add, uint8_t reg);
 void Init_MPU9250(void);
