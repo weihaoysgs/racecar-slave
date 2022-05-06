@@ -24,19 +24,20 @@ rt_thread_t Get_Ahrs_Thread_Object(void)
 }
 /* relate to thread END */
 
-extern Mpu_Data_t raw_data;
+Mpu_Data_t *raw_data_pt;
 
 static void Ahrs_Thread(void *param)
 {
+	raw_data_pt = Get_Mpu_Data_pt();
 	for (;;)
 	{
 		READ_MPU9250_ACCEL();
 		READ_MPU9250_GYRO();
 		READ_MPU9250_MAG();
 
-		// printf("ax: %d ay:%d  az:%d\t",raw_data.ax  ,raw_data.ay,raw_data.az);
-		// printf("gx: = %d  gy:%d  gz:%d\t  ",raw_data.gx,raw_data.gy,raw_data.gz);
-		// printf("mx:%d  my:%d  mz:%d\r\n",raw_data.mx,raw_data.my,raw_data.mz);
+		// printf("ax: %d ay:%d  az:%d\t",raw_data_pt->ax  ,raw_data_pt->ay,raw_data_pt->az);
+		// printf("gx: = %d  gy:%d  gz:%d\t  ",raw_data_pt->gx,raw_data_pt->gy,raw_data_pt->gz);
+		// printf("mx:%d  my:%d  mz:%d\r\n",raw_data_pt->mx,raw_data_pt->my,raw_data_pt->mz);
 		
 		rt_thread_delay(20);
 	}

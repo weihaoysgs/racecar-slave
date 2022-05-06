@@ -124,3 +124,8 @@ uint8_t MPU_Read_Byte(uint8_t slave_add, uint8_t reg)
 	IIC_Stop();					  //产生一个停止条件
 	return res;
 }
+
+Mpu_Data_t *Get_Mpu_Data_pt(void)
+{
+	return &raw_data;
+}

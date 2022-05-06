@@ -77,5 +77,6 @@ void Init_MPU9250(void);
 void READ_MPU9250_ACCEL(void);
 void READ_MPU9250_GYRO(void);
 void READ_MPU9250_MAG(void);
+Mpu_Data_t *Get_Mpu_Data_pt(void);
 
 #endif // __MPU9250_H_
