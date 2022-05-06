@@ -129,3 +129,8 @@ Mpu_Data_t *Get_Mpu_Data_pt(void)
 {
 	return &raw_data;
 }
+
+uint8_t Get_Mpu_Data_Length(void)
+{
+	return (sizeof(raw_data));
+}
