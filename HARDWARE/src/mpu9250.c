@@ -22,28 +22,27 @@ void Init_MPU9250(void)
 		MPU_Write_Byte(GYRO_ADDRESS, PWR_MGMT_1, 0x00);	   //唤醒MPU9250
 		MPU_Write_Byte(GYRO_ADDRESS, SMPLRT_DIV, 0x07);	   //陀螺仪采样率,125Hz
 		MPU_Write_Byte(GYRO_ADDRESS, CONFIG, 0x06);		   //低通滤波频率,5Hz
-		MPU_Write_Byte(GYRO_ADDRESS, GYRO_CONFIG, 0x18);   //陀螺仪自检及测量范围,不自检，±2000deg/s
-		MPU_Write_Byte(GYRO_ADDRESS, ACCEL_CONFIG, 0x018); //±16g
+		MPU_Write_Byte(GYRO_ADDRESS, GYRO_CONFIG, 0x18);   //陀螺仪自检及测量范围,不自检，±2000deg/s +- 2000
+		MPU_Write_Byte(GYRO_ADDRESS, ACCEL_CONFIG, 0x018); //±16g +-2048
 	}
 }
 
 //******读取MPU9250数据****************************************
 void READ_MPU9250_ACCEL(void)
 {
-
 	mup_buff[0] = MPU_Read_Byte(ACCEL_ADDRESS, ACCEL_XOUT_L);
 	mup_buff[1] = MPU_Read_Byte(ACCEL_ADDRESS, ACCEL_XOUT_H);
-	raw_data.ax = (mup_buff[1] << 8) | mup_buff[0];
-	raw_data.ax /= 164; //读取计算X轴数据
+	raw_data.ax = ((mup_buff[1] << 8) | mup_buff[0]);
+	// raw_data.ax /= 164; //读取计算X轴数据 / 209.0
 
 	mup_buff[2] = MPU_Read_Byte(ACCEL_ADDRESS, ACCEL_YOUT_L);
 	mup_buff[3] = MPU_Read_Byte(ACCEL_ADDRESS, ACCEL_YOUT_H);
-	raw_data.ay = (mup_buff[3] << 8) | mup_buff[2];
-	raw_data.ay /= 164; //读取计算Y轴数据
+	raw_data.ay = ((mup_buff[3] << 8) | mup_buff[2]);
+	// raw_data.ay /= 164; //读取计算Y轴数据
 	mup_buff[4] = MPU_Read_Byte(ACCEL_ADDRESS, ACCEL_ZOUT_L);
 	mup_buff[5] = MPU_Read_Byte(ACCEL_ADDRESS, ACCEL_ZOUT_H);
-	raw_data.az = (mup_buff[5] << 8) | mup_buff[4];
-	raw_data.az /= 164; //读取计算Z轴数据
+	raw_data.az = ((mup_buff[5] << 8) | mup_buff[4]);
+	// raw_data.az /= 164; //读取计算Z轴数据
 }
 
 void READ_MPU9250_GYRO(void)
@@ -52,16 +51,16 @@ void READ_MPU9250_GYRO(void)
 	mup_buff[0] = MPU_Read_Byte(GYRO_ADDRESS, GYRO_XOUT_L);
 	mup_buff[1] = MPU_Read_Byte(GYRO_ADDRESS, GYRO_XOUT_H);
 	raw_data.gx = (mup_buff[1] << 8) | mup_buff[0];
-	raw_data.gx /= 16.4; //读取计算X轴数据
+	// raw_data.gx /= 16.4; //读取计算X轴数据
 
 	mup_buff[2] = MPU_Read_Byte(GYRO_ADDRESS, GYRO_YOUT_L);
 	mup_buff[3] = MPU_Read_Byte(GYRO_ADDRESS, GYRO_YOUT_H);
 	raw_data.gy = (mup_buff[3] << 8) | mup_buff[2];
-	raw_data.gy /= 16.4; //读取计算Y轴数据
+	// raw_data.gy /= 16.4; //读取计算Y轴数据
 	mup_buff[4] = MPU_Read_Byte(GYRO_ADDRESS, GYRO_ZOUT_L);
 	mup_buff[5] = MPU_Read_Byte(GYRO_ADDRESS, GYRO_ZOUT_H);
 	raw_data.gz = (mup_buff[5] << 8) | mup_buff[4];
-	raw_data.gz /= 16.4; //读取计算Z轴数据
+	// raw_data.gz /= 16.4; //读取计算Z轴数据
 
 	// BUF[6]=Single_Read(GYRO_ADDRESS,TEMP_OUT_L);
 	// BUF[7]=Single_Read(GYRO_ADDRESS,TEMP_OUT_H);

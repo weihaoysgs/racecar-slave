@@ -46,7 +46,7 @@
 #define MAG_ADDRESS    0x18   //¥≈≥°µÿ÷∑
 #define ACCEL_ADDRESS  0xD0 
 
-typedef struct
+typedef __packed struct
 {
 	int16_t ax;
 	int16_t ay;
