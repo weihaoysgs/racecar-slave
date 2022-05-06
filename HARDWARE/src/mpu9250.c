@@ -16,7 +16,7 @@ void Init_MPU9250(void)
 	delay_ms(10);	
 	if(MPU_Read_Byte(GYRO_ADDRESS,WHO_AM_I) == 0x71)	
 	{	
-		printf("success\r\n");
+		printf("mpu9250 init success\r\n");
 		MPU_Write_Byte(GYRO_ADDRESS,PWR_MGMT_1, 0x80);      //¸´Î»MPU9250
 		delay_ms(100);
 		MPU_Write_Byte(GYRO_ADDRESS,PWR_MGMT_1, 0x00);	    //»½ÐÑMPU9250
