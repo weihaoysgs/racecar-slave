@@ -6,6 +6,7 @@
 #include "rtthread.h"
 #include "usart1.h"
 #include "upload_message.h"
+#include "ahrs_task.h"
 
 void Upload_Thread_Init(void);
 rt_thread_t Get_Upload_Thread_Object(void);

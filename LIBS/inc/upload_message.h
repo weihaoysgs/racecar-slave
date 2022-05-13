@@ -2,6 +2,7 @@
 #define __UPLOAD_MESSAGE_H_
 
 #include "stm32f10x.h"
+#include "mpu9250.h"
 
 typedef __packed struct
 {
@@ -25,6 +26,7 @@ typedef __packed struct
         uint16_t servo_angle;
 
         float yaw_angle;
+        Mpu_Data_t mpu_raw_data;
     } data;
 
     //帧尾 crc8校验

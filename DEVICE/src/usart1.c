@@ -1,11 +1,11 @@
 #include "usart1.h"
 #include "rosmsg_task.h"
 
-static const uint8_t usart1_dma_rx_max_len = 30;
+static const uint8_t usart1_dma_rx_max_len = 60;
 static uint8_t usart1_dma_rx_buffer[usart1_dma_rx_max_len];
 static uint8_t usart1_dma_rxd_len;
 
-static const uint8_t usart1_dma_send_max_len = 50;
+static const uint8_t usart1_dma_send_max_len = 70;
 static uint8_t usart1_dma_send_buffer[usart1_dma_send_max_len];
 
 // PA9 -> Tx
