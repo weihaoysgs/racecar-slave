@@ -31,7 +31,7 @@ static void Upload_Thread(void *param)
     {
         Set_Ros_Send_Data_MSG();
 		Usart1_Dma_Send((uint32_t)Get_Ros_Send_Buffer(), Get_Ros_Send_Data_Len());
-        rt_thread_delay(70);
+        rt_thread_delay(10); //max:5
     }
 }
 
