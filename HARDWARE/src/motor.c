@@ -8,6 +8,7 @@
 // PC8 - IN2 - TIM8_CH3
 // PC9 - IN1 - TIM8_CH4
 
+// Fast Decay 带刹车模式的
 void SetMotorLeftPower(int32_t power) {
 	if(power == 0){
 		TIM8->CCR1 = 0;
@@ -23,6 +24,7 @@ void SetMotorLeftPower(int32_t power) {
 	}
 }
 
+// Fast Decay 带刹车模式的
 void SetMotorRightPower(int32_t power) {
 	if(power == 0){
 		TIM8->CCR3 = 0;
