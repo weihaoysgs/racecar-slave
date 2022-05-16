@@ -30,9 +30,9 @@ static const Ros_message_t* ros_msg;
 // 左小右大
 static const Servo_Construction_Value_t servo_limit_value_t =
 {
-	.max_ = 1893, //最左转
-	.middle = 1460, //1000
-	.min_ = 900 //最右转
+	.max_ = 1830, //最左转
+	.middle = 1260, //1000
+	.min_ = 690 //最右转
 };
 
 static void Chassis_Thread(void *param)
@@ -48,7 +48,7 @@ static void Chassis_Thread(void *param)
 		// 遥控器输入
 		if(Rc_Valid_Status())
 		{
-			servo_pulse = (int16_t)servo_limit_value_t.middle - (int16_t)(Joystick_Raw_To_Normal_Data(rc_data_pt->ch1)/1.8f);
+			servo_pulse = (int16_t)servo_limit_value_t.middle - (int16_t)(Joystick_Raw_To_Normal_Data(rc_data_pt->ch1)/1.4f);
 			true_motors_speed_target[0] = Joystick_Raw_To_Normal_Data(rc_data_pt->ch3) / 2.12345f;
 			true_motors_speed_target[1] = Joystick_Raw_To_Normal_Data(rc_data_pt->ch3) / 2.12345f;
 		}
