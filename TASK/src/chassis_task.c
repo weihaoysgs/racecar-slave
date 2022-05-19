@@ -28,6 +28,7 @@ static const Rc_Data_t* rc_data_pt;
 static const Ros_message_t* ros_msg;
 
 // 左小右大
+static const float rosmsg_get_max_servo_angle = 90.0f; //从ros中获取的最大舵机角度
 static const Servo_Construction_Value_t servo_limit_value_t =
 {
 	.max_ = 1830, //最左转
@@ -58,8 +59,8 @@ static void Chassis_Thread(void *param)
 		{
 			servo_pulse = (int16_t)servo_limit_value_t.middle 
 							+ ( (ros_msg->data.angle > 0) \
-							? (ros_msg->data.angle * (servo_limit_value_t.max_ - servo_limit_value_t.middle) / 90.0f) \
-							: (ros_msg->data.angle * (servo_limit_value_t.middle - servo_limit_value_t.min_) / 90.0f) );
+							? (ros_msg->data.angle * (servo_limit_value_t.max_ - servo_limit_value_t.middle) / rosmsg_get_max_servo_angle) \
+							: (ros_msg->data.angle * (servo_limit_value_t.middle - servo_limit_value_t.min_) / rosmsg_get_max_servo_angle) );
 			
 			// 2040 脉冲 / 圈
 			// 0.375m / 圈
@@ -78,7 +79,7 @@ static void Chassis_Thread(void *param)
 				if(true_motors_speed_target[0] > 0)
 				{
 					true_motors_speed_target[0] = true_motors_speed_target[0] 
-													* (1 - Differential_Parameters * (ros_msg->data.angle / 45.0f));
+													* (1 - Differential_Parameters * (ros_msg->data.angle / rosmsg_get_max_servo_angle));
 				}
 			}
 			else ///< 右转，右轮速度减小
@@ -86,7 +87,7 @@ static void Chassis_Thread(void *param)
 				if(true_motors_speed_target[1] > 0)
 				{
 					true_motors_speed_target[1] = true_motors_speed_target[1] 
-													* (1 + Differential_Parameters * (ros_msg->data.angle / 45.0f));
+													* (1 + Differential_Parameters * (ros_msg->data.angle / rosmsg_get_max_servo_angle));
 				}
 			}
 			#undef Differential_Parameters
@@ -117,8 +118,8 @@ static void Chassis_Thread(void *param)
 
 void Set_Chassis_Motor_Speed(float left_motor_speed, float right_motor_speed)
 {
-	static Pid_Position_t motor_left_speed_pid = NEW_POSITION_PID(7.7, 3.2, 0, 6800, 7200, 0, 1000, 500);
-	static Pid_Position_t motor_right_speed_pid = NEW_POSITION_PID(7.7, 3.2, 0, 6800, 7200, 0, 1000, 500);
+	static Pid_Position_t motor_left_speed_pid = NEW_POSITION_PID(7.7f, 3.2f, 0, 6800, 7200, 0, 1000, 500);
+	static Pid_Position_t motor_right_speed_pid = NEW_POSITION_PID(7.7f, 3.2f, 0, 6800, 7200, 0, 1000, 500);
 	int16_t pid_left = Pid_Position_Calc(&motor_left_speed_pid, -left_motor_speed, (float)GetMotorLeftSpeed());
 	int16_t pid_right = Pid_Position_Calc(&motor_right_speed_pid, right_motor_speed, (float)GetMotorRightSpeed());
 	SetMotorLeftPower(pid_left);
