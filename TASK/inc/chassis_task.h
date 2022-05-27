@@ -15,6 +15,7 @@
 #include "usart4.h"
 #include "usart1.h"
 #include "upload_message.h"
+#include "math.h"
 
 typedef struct Servo_Construction_Value_t
 {

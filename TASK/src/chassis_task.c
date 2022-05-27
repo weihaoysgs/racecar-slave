@@ -43,6 +43,7 @@ static void Chassis_Thread(void *param)
 	static uint16_t servo_pulse; ///< 舵机pwm输出值
 	static float true_motors_speed_target[2]; ///< 左右两轮目标速度
 	rt_thread_delay(2000);
+	double servo_interval_value = servo_limit_value_t.max_ - servo_limit_value_t.min_;
 
 	for (;;)
 	{
@@ -52,6 +53,17 @@ static void Chassis_Thread(void *param)
 			servo_pulse = (int16_t)servo_limit_value_t.middle - (int16_t)(Joystick_Raw_To_Normal_Data(rc_data_pt->ch1)/1.4f);
 			true_motors_speed_target[0] = Joystick_Raw_To_Normal_Data(rc_data_pt->ch3) / 2.12345f;
 			true_motors_speed_target[1] = Joystick_Raw_To_Normal_Data(rc_data_pt->ch3) / 2.12345f;
+			
+			if (servo_pulse < servo_limit_value_t.middle) // 向右转，右轮减速，左轮加速
+			{
+				true_motors_speed_target[0] = true_motors_speed_target[0] * exp((float)servo_pulse / servo_interval_value);
+				true_motors_speed_target[1] = true_motors_speed_target[1] ;
+			}
+			if (servo_pulse > servo_limit_value_t.middle) // 向右转，右轮减速，左轮加速
+			{
+				true_motors_speed_target[0] = true_motors_speed_target[0] ;
+				true_motors_speed_target[1] = true_motors_speed_target[1] * exp((float)servo_pulse / servo_interval_value) ;
+			}
 		}
 
 		// ROS 上位机控制
