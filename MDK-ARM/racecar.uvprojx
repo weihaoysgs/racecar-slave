@@ -644,14 +644,14 @@
           <GroupName>DEVICE</GroupName>
           <Files>
             <File>
+              <FileName>adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\DEVICE\src\adc.c</FilePath>
+            </File>
+            <File>
               <FileName>time1.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\DEVICE\src\time1.c</FilePath>
-            </File>
-            <File>
-              <FileName>usart4.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\DEVICE\src\usart4.c</FilePath>
             </File>
             <File>
               <FileName>time2.c</FileName>
@@ -669,11 +669,6 @@
               <FilePath>..\DEVICE\src\time8.c</FilePath>
             </File>
             <File>
-              <FileName>usart5.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\DEVICE\src\usart5.c</FilePath>
-            </File>
-            <File>
               <FileName>usart1.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\DEVICE\src\usart1.c</FilePath>
@@ -682,6 +677,16 @@
               <FileName>usart2.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\DEVICE\src\usart2.c</FilePath>
+            </File>
+            <File>
+              <FileName>usart4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\DEVICE\src\usart4.c</FilePath>
+            </File>
+            <File>
+              <FileName>usart5.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\DEVICE\src\usart5.c</FilePath>
             </File>
           </Files>
         </Group>

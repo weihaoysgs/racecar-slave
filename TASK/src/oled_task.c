@@ -1,5 +1,8 @@
 #include "oled_task.h"
 #include "oled.h"
+#include "pstwo_task.h"
+#include "rosmsg_task.h"
+#include "adc.h"
 
 /* relate to thread BEGIN */
 ALIGN(RT_ALIGN_SIZE)
@@ -31,10 +34,24 @@ static void Oled_Thread(void *param)
     rt_thread_delay(1000);
     for (;;)
     {
-        OLED_ShowString(00, 0, "A");
-		OLED_DrawPoint(30,30,0);
-		OLED_DrawPoint(32,32,1);
-        OLED_DrawPoint(0,0,1);
+        static float battery_volt = 0.0f;
+        battery_volt = battery_volt*0.95 + Get_battery_volt()*0.05;
+        int battery_volt_out = battery_volt;
+
+		OLED_ShowString(00, 00, "Power:");
+	    OLED_ShowNumber(60, 00, battery_volt_out/100, 2, 12);
+        OLED_ShowNumber(90, 00, battery_volt_out%100, 2, 12);
+
+        OLED_ShowString(00, 20, "Time:");
+	    OLED_ShowNumber(50, 20, (rt_tick_get()/1000)/60, 2, 12);
+        OLED_ShowNumber(80, 20, (rt_tick_get()/1000)%60, 2, 12);
+
+        OLED_ShowString(00, 40, "Rc:");
+	    OLED_ShowNumber(25, 40, Rc_Valid_Status(), 1, 12);
+
+        OLED_ShowString(60, 40, "Ros:");
+	    OLED_ShowNumber(95, 40, Get_Ros_Message_Status(), 1, 12);
+
 		OLED_Refresh_Gram();
         rt_thread_delay(100); //max:5
     }

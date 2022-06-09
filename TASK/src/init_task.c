@@ -8,6 +8,7 @@
 #include "time1.h"
 #include "usart5.h"
 #include "usart1.h"
+#include "adc.h"
 
 /**
  * @brief 所有外设初始化
@@ -23,6 +24,8 @@ void Peripheral_Init(void)
     Uart5_Init();
     Uart4_Init();
     
+    Adc_Init();
+
     // ros串口
     Usart1_Init_Self();
 
