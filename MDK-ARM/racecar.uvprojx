@@ -809,6 +809,11 @@
               <FilePath>..\TASK\src\upload_task.c</FilePath>
             </File>
             <File>
+              <FileName>oled_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\TASK\src\oled_task.c</FilePath>
+            </File>
+            <File>
               <FileName>shell_task.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\TASK\src\shell_task.c</FilePath>

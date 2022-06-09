@@ -6,6 +6,7 @@
 #include "ahrs_task.h"
 #include "rosmsg_task.h"
 #include "upload_task.h"
+#include "oled_task.h"
 #include "shell_task.h"
 
 int main(void)
@@ -25,6 +26,7 @@ int main(void)
 		Ahrs_Thread_Init();
 		Rosmsg_Thread_Init();
 		Upload_Thread_Init();
+		Oled_Thread_Init();
 		Shell_Thread_Init();
 
 		rt_timer_start(Get_Motor_Speed_Clc_Timer_Object());
@@ -33,6 +35,7 @@ int main(void)
 		rt_thread_startup(Get_Ahrs_Thread_Object());
 		rt_thread_startup(Get_Rosmsg_Thread_Object());
 		rt_thread_startup(Get_Upload_Thread_Object());
+		rt_thread_startup(Get_Oled_Thread_Object());
 		rt_thread_startup(Get_Shell_Thread_Object());
 		// END 初始化并启动任务 END
 
