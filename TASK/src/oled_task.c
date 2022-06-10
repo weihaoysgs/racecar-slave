@@ -35,12 +35,13 @@ static void Oled_Thread(void *param)
     for (;;)
     {
         static float battery_volt = 0.0f;
-        battery_volt = battery_volt*0.95 + Get_battery_volt()*0.05;
+        battery_volt = battery_volt*0.9 + Get_battery_volt()*0.1;
         int battery_volt_out = battery_volt;
 
 		OLED_ShowString(00, 00, "Power:");
-	    OLED_ShowNumber(60, 00, battery_volt_out/100, 2, 12);
-        OLED_ShowNumber(90, 00, battery_volt_out%100, 2, 12);
+	    OLED_ShowNumber(60, 00, battery_volt_out/100, 2, 12); //整数位
+        OLED_ShowNumber(80, 00, (battery_volt_out%100)/10, 1, 12); //小数点后第1位
+        OLED_ShowNumber(86, 00, battery_volt_out%10, 1, 12); //小数点后第2位
 
         OLED_ShowString(00, 20, "Time:");
 	    OLED_ShowNumber(50, 20, (rt_tick_get()/1000)/60, 2, 12);
@@ -53,7 +54,7 @@ static void Oled_Thread(void *param)
 	    OLED_ShowNumber(95, 40, Get_Ros_Message_Status(), 1, 12);
 
 		OLED_Refresh_Gram();
-        rt_thread_delay(100); //max:5
+        rt_thread_delay(200);
     }
 }
 
