@@ -29,9 +29,11 @@ static void Upload_Thread(void *param)
     rt_thread_delay(1000);
     for (;;)
     {
+        static rt_tick_t now_time;
+        now_time = rt_tick_get();
         Set_Ros_Send_Data_MSG();
 		Usart1_Dma_Send((uint32_t)Get_Ros_Send_Buffer(), Get_Ros_Send_Data_Len());
-        rt_thread_delay(10); //max:5
+        rt_thread_delay_until(&now_time, 20); //max:5
     }
 }
 
