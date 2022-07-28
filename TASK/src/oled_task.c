@@ -28,9 +28,13 @@ rt_thread_t Get_Oled_Thread_Object(void)
 }
 /* relate to thread END */
 
+static int reset_time = 0;
+
 static void Oled_Thread(void *param)
 {
+OLED_RESET:
     OLED_Init();
+    reset_time = 3000;
     rt_thread_delay(1000);
     for (;;)
     {
@@ -44,8 +48,9 @@ static void Oled_Thread(void *param)
         OLED_ShowNumber(86, 00, battery_volt_out%10, 1, 12); //小数点后第2位
 
         OLED_ShowString(00, 20, "Time:");
-	    OLED_ShowNumber(50, 20, (rt_tick_get()/1000)/60, 2, 12);
-        OLED_ShowNumber(80, 20, (rt_tick_get()/1000)%60, 2, 12);
+        OLED_ShowNumber(50, 20, (rt_tick_get()/1000)/3600, 2, 12);
+	    OLED_ShowNumber(75, 20, ((rt_tick_get()/1000)/60)%60, 2, 12);
+        OLED_ShowNumber(100, 20, (rt_tick_get()/1000)%60, 2, 12);
 
         OLED_ShowString(00, 40, "Rc:");
 	    OLED_ShowNumber(25, 40, Rc_Valid_Status(), 1, 12);
@@ -54,6 +59,11 @@ static void Oled_Thread(void *param)
 	    OLED_ShowNumber(95, 40, Get_Ros_Message_Status(), 1, 12);
 
 		OLED_Refresh_Gram();
+        
+        if(--reset_time<0)
+        {
+            goto OLED_RESET;
+        }
         rt_thread_delay(200);
     }
 }
