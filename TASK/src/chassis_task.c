@@ -51,19 +51,8 @@ static void Chassis_Thread(void *param)
 		if(Rc_Valid_Status())
 		{
 			servo_pulse = (int16_t)servo_limit_value_t.middle - (int16_t)(Joystick_Raw_To_Normal_Data(rc_data_pt->ch1)/1.4f);
-			true_motors_speed_target[0] = Joystick_Raw_To_Normal_Data(rc_data_pt->ch3) / 2.12345f;
-			true_motors_speed_target[1] = Joystick_Raw_To_Normal_Data(rc_data_pt->ch3) / 2.12345f;
-			
-			if (servo_pulse < servo_limit_value_t.middle) // 向右转，右轮减速，左轮加速
-			{
-				true_motors_speed_target[0] = true_motors_speed_target[0] * exp((float)servo_pulse / servo_interval_value);
-				true_motors_speed_target[1] = true_motors_speed_target[1] ;
-			}
-			if (servo_pulse > servo_limit_value_t.middle) // 向右转，右轮减速，左轮加速
-			{
-				true_motors_speed_target[0] = true_motors_speed_target[0] ;
-				true_motors_speed_target[1] = true_motors_speed_target[1] * exp((float)servo_pulse / servo_interval_value) ;
-			}
+			true_motors_speed_target[0] = Joystick_Raw_To_Normal_Data(rc_data_pt->ch3) / 1.45678f;
+			true_motors_speed_target[1] = Joystick_Raw_To_Normal_Data(rc_data_pt->ch3) / 1.45678f;
 		}
 
 		// ROS 上位机控制
@@ -117,8 +106,8 @@ static void Chassis_Thread(void *param)
 		Uint16_Constrain(&servo_pulse, servo_limit_value_t.min_, servo_limit_value_t.max_);
 		Set_Racecar_Direction(servo_pulse);
 
-		Float_Constrain(&true_motors_speed_target[0], -388.98765f, 388.98765f);
-		Float_Constrain(&true_motors_speed_target[1], -388.98765f, 388.98765f);
+		Float_Constrain(&true_motors_speed_target[0], -456.0, 456.0);
+		Float_Constrain(&true_motors_speed_target[1], -456.0, 456.0);
 		
 		// 通过PID控制电机速度
 		Set_Chassis_Motor_Speed(true_motors_speed_target[0],
@@ -128,10 +117,18 @@ static void Chassis_Thread(void *param)
 	}
 }
 
+Pid_Position_t motor_left_speed_pid = NEW_POSITION_PID(20.12f, 5.56f, 0.1, 1567, 7200, 0, 1000, 500);
+Pid_Position_t motor_right_speed_pid = NEW_POSITION_PID(20.12f, 5.56f, 0.1, 1567, 7200, 0, 1000, 500);
 void Set_Chassis_Motor_Speed(float left_motor_speed, float right_motor_speed)
 {
-	static Pid_Position_t motor_left_speed_pid = NEW_POSITION_PID(7.7f, 3.2f, 0, 6800, 7200, 0, 1000, 500);
-	static Pid_Position_t motor_right_speed_pid = NEW_POSITION_PID(7.7f, 3.2f, 0, 6800, 7200, 0, 1000, 500);
+	// motor_left_speed_pid.kp = easy_pid_p;
+	// motor_left_speed_pid.ki = easy_pid_i;
+	// motor_left_speed_pid.kd = easy_pid_d;
+	// motor_right_speed_pid.kp = easy_pid_p;
+	// motor_right_speed_pid.ki = easy_pid_i;
+	// motor_right_speed_pid.kd = easy_pid_d;
+	// motor_left_speed_pid.max_err_integral = easy_pid2_p;
+	// motor_right_speed_pid.max_err_integral = easy_pid2_p;
 	int16_t pid_left = Pid_Position_Calc(&motor_left_speed_pid, -left_motor_speed, (float)GetMotorLeftSpeed());
 	int16_t pid_right = Pid_Position_Calc(&motor_right_speed_pid, right_motor_speed, (float)GetMotorRightSpeed());
 	SetMotorLeftPower(pid_left);
