@@ -32,5 +32,6 @@ void Set_Chassis_Motor_Speed(float left_motor_speed, float right_motor_speed);
 void Int16_Constrain(int16_t *data, const int16_t min_value, const int16_t max_value);
 void Uint16_Constrain(uint16_t *data, const uint16_t min_value, const uint16_t max_value);
 void Float_Constrain(float *data, const float min_value, const float max_value);
+uint8_t Motor_Stalling_Check(const Pid_Position_t* pid, int8_t* cnt);
 
 #endif // __CHASSIS_TASK_H_

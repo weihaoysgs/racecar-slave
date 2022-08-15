@@ -2,7 +2,7 @@
 
 /* relate to thread BEGIN */
 ALIGN(RT_ALIGN_SIZE)
-static char chassis_thread_stack[512];
+static char chassis_thread_stack[1024];
 static struct rt_thread chassis_thread_object;
 static void Chassis_Thread(void *param);
 
@@ -26,6 +26,9 @@ rt_thread_t Get_Chassis_Thread_Object(void)
 
 static const Rc_Data_t* rc_data_pt;
 static const Ros_message_t* ros_msg;
+
+Pid_Position_t motor_left_speed_pid = NEW_POSITION_PID(20.12f, 5.56f, 0.1, 1567, 7198, 0, 1000, 500);
+Pid_Position_t motor_right_speed_pid = NEW_POSITION_PID(20.12f, 5.56f, 0.1, 1567, 7198, 0, 1000, 500);
 
 // 左小右大
 static const float rosmsg_get_max_servo_angle = 90.0f; //从ros中获取的最大舵机角度
@@ -100,35 +103,41 @@ static void Chassis_Thread(void *param)
 			servo_pulse = servo_limit_value_t.middle;
 			true_motors_speed_target[0] = 0;
 			true_motors_speed_target[1] = 0;
+			Set_Racecar_Direction(servo_pulse);
+NO_OUTPIUT:
+			TIM8->CCR1 = 0;TIM8->CCR2 = 0;TIM8->CCR3 = 0;TIM8->CCR4 = 0;
+			goto CHASSIS_END;
 		}
 
 		// 设置舵机角度
 		Uint16_Constrain(&servo_pulse, servo_limit_value_t.min_, servo_limit_value_t.max_);
 		Set_Racecar_Direction(servo_pulse);
 
-		Float_Constrain(&true_motors_speed_target[0], -456.0, 456.0);
-		Float_Constrain(&true_motors_speed_target[1], -456.0, 456.0);
+		Float_Constrain(&true_motors_speed_target[0], -488.66, 488.66);
+		Float_Constrain(&true_motors_speed_target[1], -488.66, 488.66);
 		
 		// 通过PID控制电机速度
 		Set_Chassis_Motor_Speed(true_motors_speed_target[0],
 								true_motors_speed_target[1]);
 
+		
+		static int8_t left_stalling_check_cnt = 0;
+		static int8_t right_stalling_check_cnt = 0;
+		if (Motor_Stalling_Check(&motor_left_speed_pid, &left_stalling_check_cnt) ||
+			Motor_Stalling_Check(&motor_right_speed_pid, &right_stalling_check_cnt))
+		{
+			TIM8->CCR1 = 0; TIM8->CCR2 = 0; TIM8->CCR3 = 0; TIM8->CCR4 = 0;
+			goto NO_OUTPIUT;
+		}
+
+CHASSIS_END:
 		rt_thread_delay(20);
 	}
 }
 
-Pid_Position_t motor_left_speed_pid = NEW_POSITION_PID(20.12f, 5.56f, 0.1, 1567, 7200, 0, 1000, 500);
-Pid_Position_t motor_right_speed_pid = NEW_POSITION_PID(20.12f, 5.56f, 0.1, 1567, 7200, 0, 1000, 500);
+
 void Set_Chassis_Motor_Speed(float left_motor_speed, float right_motor_speed)
 {
-	// motor_left_speed_pid.kp = easy_pid_p;
-	// motor_left_speed_pid.ki = easy_pid_i;
-	// motor_left_speed_pid.kd = easy_pid_d;
-	// motor_right_speed_pid.kp = easy_pid_p;
-	// motor_right_speed_pid.ki = easy_pid_i;
-	// motor_right_speed_pid.kd = easy_pid_d;
-	// motor_left_speed_pid.max_err_integral = easy_pid2_p;
-	// motor_right_speed_pid.max_err_integral = easy_pid2_p;
 	int16_t pid_left = Pid_Position_Calc(&motor_left_speed_pid, -left_motor_speed, (float)GetMotorLeftSpeed());
 	int16_t pid_right = Pid_Position_Calc(&motor_right_speed_pid, right_motor_speed, (float)GetMotorRightSpeed());
 	SetMotorLeftPower(pid_left);
@@ -165,4 +174,35 @@ void Set_Racecar_Direction(uint16_t pulse)
 	Uint16_Constrain(&__pulse, servo_limit_value_t.min_, servo_limit_value_t.max_);
 	TIM1->CCR1 = __pulse;
 	TIM1->CCR4 = __pulse;
+}
+
+float ffabs(float num)
+{
+	return num>0 ? num:-num;
+}
+
+/**
+ * @brief 堵转检测（有pid才能用！！！！）
+ * 
+ * @param pid 
+ * @param cnt 
+ * @return int8_t 
+ */
+uint8_t Motor_Stalling_Check(const Pid_Position_t* pid, int8_t* cnt)
+{
+	if(ffabs(pid->output) == pid->max_out)
+		{if(pid->cur == 0.0f)
+		{
+			(*cnt)++;
+			if ((*cnt) > 5)
+			{
+				(*cnt) = 0;
+				return 1;
+			}
+			return 0;
+		}}
+			
+	if(*cnt>0)
+		(*cnt)--;
+	return 0;
 }

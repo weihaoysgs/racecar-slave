@@ -11,8 +11,8 @@
 // Fast Decay 带刹车模式的
 void SetMotorLeftPower(int32_t power) {
 	if(power == 0){
-		TIM8->CCR1 = 0;
-		TIM8->CCR2 = 0;
+		TIM8->CCR1 = 7200;
+		TIM8->CCR2 = 7200;
 	}
 	else if (power > 0) {
 		TIM8->CCR1 = 7200;
@@ -27,8 +27,8 @@ void SetMotorLeftPower(int32_t power) {
 // Fast Decay 带刹车模式的
 void SetMotorRightPower(int32_t power) {
 	if(power == 0){
-		TIM8->CCR3 = 0;
-		TIM8->CCR4 = 0;
+		TIM8->CCR3 = 7200;
+		TIM8->CCR4 = 7200;
 	}
 	else if (power > 0) {
 		TIM8->CCR3 = 7200;
