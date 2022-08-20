@@ -27,8 +27,8 @@ rt_thread_t Get_Chassis_Thread_Object(void)
 static const Rc_Data_t* rc_data_pt;
 static const Ros_message_t* ros_msg;
 
-Pid_Position_t motor_left_speed_pid = NEW_POSITION_PID(20.12f, 5.56f, 0.1, 1567, 7198, 0, 1000, 500);
-Pid_Position_t motor_right_speed_pid = NEW_POSITION_PID(20.12f, 5.56f, 0.1, 1567, 7198, 0, 1000, 500);
+Pid_Position_t motor_left_speed_pid = NEW_POSITION_PID(5.678f, 5.56f, 0.1, 1567, 7198, 0, 1000, 500);
+Pid_Position_t motor_right_speed_pid = NEW_POSITION_PID(5.678f, 5.56f, 0.1, 1567, 7198, 0, 1000, 500);
 
 // 左小右大
 static const float rosmsg_get_max_servo_angle = 90.0f; //从ros中获取的最大舵机角度
@@ -56,6 +56,8 @@ static void Chassis_Thread(void *param)
 			servo_pulse = (int16_t)servo_limit_value_t.middle - (int16_t)(Joystick_Raw_To_Normal_Data(rc_data_pt->ch1)/1.4f);
 			true_motors_speed_target[0] = Joystick_Raw_To_Normal_Data(rc_data_pt->ch3) / 1.45678f;
 			true_motors_speed_target[1] = Joystick_Raw_To_Normal_Data(rc_data_pt->ch3) / 1.45678f;
+			true_motors_speed_target[0] += Joystick_Raw_To_Normal_Data(rc_data_pt->ch4) / 1.85678f;
+			true_motors_speed_target[1] -= Joystick_Raw_To_Normal_Data(rc_data_pt->ch4) / 1.85678f;
 		}
 
 		// ROS 上位机控制
@@ -101,11 +103,16 @@ static void Chassis_Thread(void *param)
 		else
 		{
 			servo_pulse = servo_limit_value_t.middle;
+			Set_Racecar_Direction(servo_pulse);
+			if(0)
+			{
+NO_OUTPIUT:
+				TIM8->CCR1 = 0;TIM8->CCR2 = 0;TIM8->CCR3 = 0;TIM8->CCR4 = 0;
+				rt_thread_delay(20);
+			}
 			true_motors_speed_target[0] = 0;
 			true_motors_speed_target[1] = 0;
-			Set_Racecar_Direction(servo_pulse);
-NO_OUTPIUT:
-			TIM8->CCR1 = 0;TIM8->CCR2 = 0;TIM8->CCR3 = 0;TIM8->CCR4 = 0;
+			TIM8->CCR1 = 7200;TIM8->CCR2 = 7200;TIM8->CCR3 = 7200;TIM8->CCR4 = 7200;
 			goto CHASSIS_END;
 		}
 
@@ -113,8 +120,8 @@ NO_OUTPIUT:
 		Uint16_Constrain(&servo_pulse, servo_limit_value_t.min_, servo_limit_value_t.max_);
 		Set_Racecar_Direction(servo_pulse);
 
-		Float_Constrain(&true_motors_speed_target[0], -488.66, 488.66);
-		Float_Constrain(&true_motors_speed_target[1], -488.66, 488.66);
+		Float_Constrain(&true_motors_speed_target[0], -499.66, 499.66);
+		Float_Constrain(&true_motors_speed_target[1], -499.66, 499.66);
 		
 		// 通过PID控制电机速度
 		Set_Chassis_Motor_Speed(true_motors_speed_target[0],
@@ -190,11 +197,11 @@ float ffabs(float num)
  */
 uint8_t Motor_Stalling_Check(const Pid_Position_t* pid, int8_t* cnt)
 {
-	if(ffabs(pid->output) == pid->max_out)
-		{if(pid->cur == 0.0f)
+	if(ffabs(pid->output) > (pid->max_out-10.0f))
+		{if(ffabs(pid->cur) < 199.9f)
 		{
 			(*cnt)++;
-			if ((*cnt) > 5)
+			if ((*cnt) > 23)
 			{
 				(*cnt) = 0;
 				return 1;

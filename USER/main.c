@@ -8,6 +8,10 @@
 #include "upload_task.h"
 #include "oled_task.h"
 #include "shell_task.h"
+// #include "usart5.h"
+
+// extern Pid_Position_t motor_left_speed_pid;
+// extern Pid_Position_t motor_right_speed_pid;
 
 int main(void)
 {
@@ -51,6 +55,8 @@ int main(void)
 	for (;;)
 	{
 		LED_TOGGLE();
-		rt_thread_delay(800);
+		// printf("%.1f,%.1f,%.1f,", -motor_left_speed_pid.tar, -motor_left_speed_pid.cur, -motor_left_speed_pid.output);
+		// printf("%.1f,%.1f,%.1f\r\n", motor_right_speed_pid.tar, motor_right_speed_pid.cur, motor_right_speed_pid.output);
+		rt_thread_delay(350);
 	}
 }
